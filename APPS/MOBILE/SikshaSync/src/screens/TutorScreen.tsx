@@ -17,7 +17,9 @@ import { Text, TextInput, Surface, Button } from 'react-native-paper';
 import Markdown from 'react-native-markdown-display';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { collection, addDoc, doc, updateDoc, increment, serverTimestamp } from 'firebase/firestore';
+import { doc } from 'firebase/firestore';
+import * as DocumentPicker from 'expo-document-picker';
+import { extractText, isAvailable as isPdfExtractorAvailable } from 'expo-pdf-text-extract';
 
 import { db } from '../firebase/firebaseconfig';
 import { useAuth } from '../navigation/AuthContext';
@@ -119,7 +121,7 @@ export const TutorScreen: React.FC = () => {
   const [chatHistory, setChatHistory] = useState<Message[]>([
     {
       id: '0',
-      text: "Hello! I'm SikshaSync AI. How can I help you learn today?\n\n💡 Tip: You can paste your notes or document text here for a quick summary.",
+      text: "Hello! I'm SikshaSync AI. How can I help you learn today?\n\n💡 Tip: Upload a PDF and I will summarize it for you.",
       sender: 'ai',
       timestamp: Date.now(),
     },
@@ -138,11 +140,94 @@ export const TutorScreen: React.FC = () => {
     ]).start();
   };
 
-  const handlePDFUpload = () => {
-    Alert.alert(
-      'PDF Upload Disabled',
-      'Document picker is disabled. Paste text from your PDF into chat to get a summary.'
-    );
+  const handlePDFUpload = async () => {
+    if (!user) {
+      Alert.alert('Error', 'Please login to upload PDFs');
+      return;
+    }
+
+    if (!isPdfExtractorAvailable()) {
+      Alert.alert(
+        'PDF Extraction Unavailable',
+        'PDF text extraction requires a development build. Please use an Expo dev build to enable this feature.'
+      );
+      return;
+    }
+
+    try {
+      setUploadingPDF(true);
+
+      const result = await DocumentPicker.getDocumentAsync({
+        type: 'application/pdf',
+        copyToCacheDirectory: true,
+        multiple: false,
+      });
+
+      if (result.canceled || result.assets.length === 0) {
+        return;
+      }
+
+      const document = result.assets[0];
+
+      const uploadMessage: Message = {
+        id: Date.now().toString(),
+        text: `📄 Uploading "${document.name}"...`,
+        sender: 'user',
+        timestamp: Date.now(),
+        type: 'pdf_summary',
+        fileName: document.name,
+      };
+
+      setChatHistory(prev => [...prev, uploadMessage]);
+      flatListRef.current?.scrollToEnd({ animated: true });
+
+      const extractedText = await extractText(document.uri);
+      const normalizedText = extractedText.trim();
+
+      if (!normalizedText) {
+        throw new Error('No text content found in PDF');
+      }
+
+      const processingMessage: Message = {
+        id: Date.now().toString() + '_processing',
+        text: `📄 Processing "${document.name}"...\nGenerating AI summary...`,
+        sender: 'user',
+        timestamp: Date.now(),
+        type: 'pdf_summary',
+        fileName: document.name,
+      };
+      setChatHistory(prev => [...prev.slice(0, -1), processingMessage]);
+
+      const promptForSummary = `Please summarize the following PDF document content. Provide key points, important concepts, and a concise explanation suitable for students. Keep it clear and practical (about 100 words).\n\nDocument Name: ${document.name}\n\nContent:\n${normalizedText.substring(0, 20000)}`;
+
+      const summary = await GeminiService.askTutor(promptForSummary, []);
+
+      const summaryMessage: Message = {
+        id: Date.now().toString() + '_summary',
+        text: `📄 **PDF Summary: ${document.name}**\n\n${summary}\n\n---\n💡 You can now ask me follow-up questions about this document.`,
+        sender: 'ai',
+        timestamp: Date.now(),
+        type: 'pdf_summary',
+        fileName: document.name,
+      };
+
+      setChatHistory(prev => [...prev.slice(0, -1), summaryMessage]);
+      setPDFSummary(summary);
+      setShowPDFModal(true);
+
+      await AnalyticsService.logPdfUpload(user.uid, {
+        fileName: document.name,
+        fileSizeBytes: document.size ?? 0,
+      });
+    } catch (error) {
+      console.error('[PDF] Upload error:', error);
+      Alert.alert(
+        'Upload Failed',
+        'Failed to process this PDF. Please try another file or a clearer text-based PDF.'
+      );
+    } finally {
+      setUploadingPDF(false);
+    }
   };
 
   const handleSendMessage = async () => {
@@ -185,25 +270,11 @@ export const TutorScreen: React.FC = () => {
       };
       setChatHistory(prev => [...prev, aiMessage]);
 
-      // Analytics
-      console.log('[ANALYTICS] Preparing data for user:', user.uid);
-      const userRef = doc(db, 'users', user.uid);
-
-      const payload = {
+      await AnalyticsService.logTutorChatInteraction(user.uid, {
         message: currentMsg,
-        timestamp: serverTimestamp(),
-        hour: new Date().getHours(),
-        type: 'tutor_chat',
-      };
-
-      await addDoc(collection(userRef, 'interactionLogs'), payload);
-      console.log('[ANALYTICS] Log saved to interactionLogs.');
-
-      await updateDoc(userRef, {
-        totalQuestionsAsked: increment(1),
-        [`productivityMap.${new Date().getHours()}`]: increment(1),
+        response: aiResponse,
+        source: 'tutor',
       });
-      console.log('[ANALYTICS] User metrics updated.');
 
       // Pace Calculation
       const durationHours = (Date.now() - sessionStart.current) / 3600000;
@@ -287,7 +358,7 @@ export const TutorScreen: React.FC = () => {
             </View>
           </View>
           
-          {/* PDF Button (picker disabled) */}
+          {/* PDF Upload Button */}
           <TouchableOpacity
             onPress={handlePDFUpload}
             disabled={uploadingPDF}
@@ -297,8 +368,8 @@ export const TutorScreen: React.FC = () => {
               <ActivityIndicator size="small" color="#00FFCC" />
             ) : (
               <>
-                <MaterialCommunityIcons name="file-cancel" size={24} color="#00FFCC" />
-                <Text style={styles.pdfButtonText}>PDF Disabled</Text>
+                <MaterialCommunityIcons name="file-pdf-box" size={24} color="#00FFCC" />
+                <Text style={styles.pdfButtonText}>Upload PDF</Text>
               </>
             )}
           </TouchableOpacity>
@@ -335,7 +406,7 @@ export const TutorScreen: React.FC = () => {
           elevation={5}
         >
           <TextInput
-            placeholder="Ask anything or paste document text..."
+            placeholder="Ask anything or upload a PDF..."
             value={message}
             onChangeText={setMessage}
             mode="flat"

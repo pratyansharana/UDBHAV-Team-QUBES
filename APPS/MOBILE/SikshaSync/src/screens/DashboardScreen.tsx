@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { Text, Surface, Avatar, Chip } from 'react-native-paper';
-import { doc, onSnapshot } from 'firebase/firestore';
+import { collection, doc, limit, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { db } from '../firebase/firebaseconfig';
 import { useAuth } from '../navigation/AuthContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -12,6 +12,13 @@ interface DashboardStats {
   productivityMap?: Record<string, number>;
   interests?: Record<string, number>;
   totalPDFsUploaded?: number;
+}
+
+interface InteractionLogEntry {
+  type?: string;
+  topic?: string;
+  hour?: number;
+  timestamp?: { toDate?: () => Date };
 }
 
 const normalizeSeries = (values: number[], minHeight = 8, maxHeight = 90): number[] => {
@@ -26,6 +33,7 @@ const normalizeSeries = (values: number[], minHeight = 8, maxHeight = 90): numbe
 export const DashboardScreen: React.FC = () => {
   const { user } = useAuth();
   const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [logs, setLogs] = useState<InteractionLogEntry[]>([]);
 
   useEffect(() => {
     if (!user) return;
@@ -38,12 +46,89 @@ export const DashboardScreen: React.FC = () => {
     return () => unsubscribe();
   }, [user]);
 
+  useEffect(() => {
+    if (!user) {
+      setLogs([]);
+      return;
+    }
+
+    const logsQuery = query(
+      collection(db, 'users', user.uid, 'interactionLogs'),
+      orderBy('timestamp', 'desc'),
+      limit(200)
+    );
+
+    const unsubscribe = onSnapshot(logsQuery, (snapshot) => {
+      setLogs(snapshot.docs.map((entry) => entry.data() as InteractionLogEntry));
+    });
+
+    return unsubscribe;
+  }, [user]);
+
+  const logsDerivedMetrics = useMemo(() => {
+    const productivityMap: Record<string, number> = {};
+    const interests: Record<string, number> = {};
+    let totalQuestions = 0;
+    let totalPdfs = 0;
+
+    for (const log of logs) {
+      const type = log.type || '';
+      const hourValue = typeof log.hour === 'number' ? log.hour : undefined;
+      const fallbackHour = log.timestamp?.toDate ? log.timestamp.toDate().getHours() : undefined;
+      const normalizedHour = hourValue ?? fallbackHour;
+
+      if (type === 'tutor_chat') {
+        totalQuestions += 1;
+        if (typeof normalizedHour === 'number') {
+          productivityMap[normalizedHour] = (productivityMap[normalizedHour] || 0) + 1;
+        }
+
+        const topic = log.topic || 'General';
+        interests[topic] = (interests[topic] || 0) + 1;
+      }
+
+      if (type === 'pdf_upload') {
+        totalPdfs += 1;
+        if (typeof normalizedHour === 'number') {
+          productivityMap[normalizedHour] = (productivityMap[normalizedHour] || 0) + 1;
+        }
+      }
+    }
+
+    return {
+      productivityMap,
+      interests,
+      totalQuestions,
+      totalPdfs,
+    };
+  }, [logs]);
+
+  const effectiveProductivityMap =
+    Object.keys(logsDerivedMetrics.productivityMap).length > 0
+      ? logsDerivedMetrics.productivityMap
+      : (stats?.productivityMap || {});
+
+  const effectiveInterests =
+    Object.keys(logsDerivedMetrics.interests).length > 0
+      ? logsDerivedMetrics.interests
+      : (stats?.interests || {});
+
+  const effectiveQuestionsCount =
+    logsDerivedMetrics.totalQuestions > 0
+      ? logsDerivedMetrics.totalQuestions
+      : (stats?.totalQuestionsAsked || 0);
+
+  const effectivePdfCount =
+    logsDerivedMetrics.totalPdfs > 0
+      ? logsDerivedMetrics.totalPdfs
+      : (stats?.totalPDFsUploaded || 0);
+
   const productivityEntries = useMemo(() => {
-    const map = stats?.productivityMap || {};
+    const map = effectiveProductivityMap;
     return Object.entries(map)
       .map(([hour, value]) => ({ hour, value: Number(value) || 0 }))
       .sort((first, second) => Number(first.hour) - Number(second.hour));
-  }, [stats?.productivityMap]);
+  }, [effectiveProductivityMap]);
 
   const hourlyTrendData = useMemo(() => {
     const items = productivityEntries.slice(0, 8);
@@ -79,7 +164,7 @@ export const DashboardScreen: React.FC = () => {
   }, [productivityEntries]);
 
   const interestDistribution = useMemo(() => {
-    const entries = Object.entries(stats?.interests || {}).slice(0, 5);
+    const entries = Object.entries(effectiveInterests).slice(0, 5);
     const colors = ['#00FFCC', '#4CF0B3', '#7EE6A9', '#A6D8A2', '#D0C99E'];
 
     if (entries.length === 0) {
@@ -97,13 +182,13 @@ export const DashboardScreen: React.FC = () => {
         percentage: total > 0 ? (value / total) * 100 : 0,
       };
     });
-  }, [stats?.interests]);
+  }, [effectiveInterests]);
 
   const topInterest = useMemo(() => {
-    const entries = Object.entries(stats?.interests || {});
+    const entries = Object.entries(effectiveInterests);
     if (entries.length === 0) return 'None';
     return entries.sort((first, second) => Number(second[1]) - Number(first[1]))[0][0];
-  }, [stats?.interests]);
+  }, [effectiveInterests]);
 
   const peakHour = useMemo(() => {
     if (productivityEntries.length === 0) return 'No data';
@@ -139,30 +224,30 @@ export const DashboardScreen: React.FC = () => {
       {/* 2. Key Metrics Grid */}
       <View style={styles.statsRow}>
         <Surface style={styles.halfCard}>
-          <Text style={styles.cardTitle}>Questions</Text>
-          <Text style={styles.statValue}>{stats.totalQuestionsAsked || 0}</Text>
+          <Text style={styles.cardTitle}>Questions Asked (Chat)</Text>
+          <Text style={styles.statValue}>{effectiveQuestionsCount}</Text>
         </Surface>
         <Surface style={styles.halfCard}>
-          <Text style={styles.cardTitle}>Avg Pace</Text>
+          <Text style={styles.cardTitle}>Average Pace</Text>
           <Text style={styles.statValue}>{stats.avgPace ? stats.avgPace.toFixed(1) : '0.0'}</Text>
-          <Text style={styles.cardTitle}>Q/hr</Text>
+          <Text style={styles.cardTitle}>Questions per hour</Text>
         </Surface>
       </View>
 
       <View style={styles.statsRow}>
         <Surface style={styles.halfCard}>
-          <Text style={styles.cardTitle}>Top Interest</Text>
+          <Text style={styles.cardTitle}>Top Interest Topic</Text>
           <Text style={styles.inlineValue}>{topInterest}</Text>
         </Surface>
         <Surface style={styles.halfCard}>
-          <Text style={styles.cardTitle}>PDF Imports</Text>
-          <Text style={styles.statValue}>{stats.totalPDFsUploaded || 0}</Text>
+          <Text style={styles.cardTitle}>PDF Upload Events</Text>
+          <Text style={styles.statValue}>{effectivePdfCount}</Text>
         </Surface>
       </View>
 
       {/* 3. Deep Insights */}
       <Surface style={styles.fullCard}>
-        <Text style={styles.cardTitle}>Peak Productivity Time</Text>
+        <Text style={styles.cardTitle}>Peak Active Hour</Text>
         <View style={styles.row}>
           <MaterialCommunityIcons name="clock-outline" size={20} color="#00FFCC" />
           <Text style={styles.statValue}>{peakHour}</Text>
@@ -170,7 +255,7 @@ export const DashboardScreen: React.FC = () => {
       </Surface>
 
       <Surface style={styles.fullCard}>
-        <Text style={styles.cardTitle}>Hourly Activity Trend</Text>
+        <Text style={styles.cardTitle}>Hourly Activity Trend (Latest Slots)</Text>
         <View style={styles.trendChartWrap}>
           {hourlyTrendData.heights.map((height, index) => (
             <View key={`trend-${hourlyTrendData.labels[index]}-${index}`} style={styles.trendColumn}>
@@ -183,7 +268,7 @@ export const DashboardScreen: React.FC = () => {
       </Surface>
 
       <Surface style={styles.fullCard}>
-        <Text style={styles.cardTitle}>7-Slot Learning Intensity</Text>
+        <Text style={styles.cardTitle}>7-Slot Learning Intensity (Recent)</Text>
         <View style={styles.weeklyChartWrap}>
           {weeklyBars.map((entry) => (
             <View key={`week-${entry.label}`} style={styles.weeklyColumn}>
@@ -196,7 +281,7 @@ export const DashboardScreen: React.FC = () => {
       </Surface>
 
       <Surface style={styles.fullCard}>
-        <Text style={styles.cardTitle}>Interest Mix</Text>
+        <Text style={styles.cardTitle}>Interest Distribution (Top 5)</Text>
         <View style={styles.interestBarsWrap}>
           {interestDistribution.map((entry) => (
             <View key={`interest-${entry.topic}`} style={styles.interestRow}>
@@ -223,9 +308,9 @@ export const DashboardScreen: React.FC = () => {
 
       {/* 4. Interests Cloud */}
       <Surface style={styles.fullCard}>
-        <Text style={styles.cardTitle}>Key Interests</Text>
+        <Text style={styles.cardTitle}>Key Interests (From Chat Topics)</Text>
         <View style={styles.chipContainer}>
-          {stats.interests ? Object.entries(stats.interests).map(([topic, count]) => (
+          {Object.keys(effectiveInterests).length > 0 ? Object.entries(effectiveInterests).map(([topic, count]) => (
             <Chip key={topic} style={styles.chip} textStyle={styles.chipText}>
               {topic} ({count})
             </Chip>

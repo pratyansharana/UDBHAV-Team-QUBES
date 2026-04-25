@@ -143,6 +143,61 @@ const shuffle = <T,>(items: T[]): T[] => {
 	return copy;
 };
 
+const isValidIsoDate = (value: string): boolean => !Number.isNaN(new Date(value).getTime());
+
+const isValidQuizAttempt = (value: unknown): value is QuizAttempt => {
+	if (!value || typeof value !== 'object') {
+		return false;
+	}
+
+	const attempt = value as QuizAttempt;
+	return (
+		typeof attempt.id === 'string' && attempt.id.trim().length > 0 &&
+		typeof attempt.subjectId === 'string' && attempt.subjectId.trim().length > 0 &&
+		typeof attempt.subjectName === 'string' && attempt.subjectName.trim().length > 0 &&
+		typeof attempt.moduleId === 'string' && attempt.moduleId.trim().length > 0 &&
+		typeof attempt.moduleTitle === 'string' && attempt.moduleTitle.trim().length > 0 &&
+		typeof attempt.selectedQuestionCount === 'number' && attempt.selectedQuestionCount >= 0 &&
+		typeof attempt.totalQuestions === 'number' && attempt.totalQuestions > 0 &&
+		typeof attempt.score === 'number' && attempt.score >= 0 &&
+		typeof attempt.percentage === 'number' && attempt.percentage >= 0 && attempt.percentage <= 100 &&
+		typeof attempt.createdAt === 'string' && isValidIsoDate(attempt.createdAt)
+	);
+};
+
+const normalizeQuizAttempt = (attempt: QuizAttempt): QuizAttempt => {
+	const totalQuestions = Math.max(1, Math.round(attempt.totalQuestions));
+	const score = Math.min(totalQuestions, Math.max(0, Math.round(attempt.score)));
+	const selectedQuestionCount = Math.max(0, Math.round(attempt.selectedQuestionCount));
+	const percentage = Math.max(0, Math.min(100, Math.round((score / totalQuestions) * 100)));
+
+	return {
+		...attempt,
+		totalQuestions,
+		score,
+		selectedQuestionCount,
+		percentage,
+		createdAt: new Date(attempt.createdAt).toISOString(),
+	};
+};
+
+const sortAttemptsDesc = (attempts: QuizAttempt[]): QuizAttempt[] =>
+	[...attempts].sort(
+		(first, second) => new Date(second.createdAt).getTime() - new Date(first.createdAt).getTime()
+	);
+
+const dedupeAttemptsById = (attempts: QuizAttempt[]): QuizAttempt[] => {
+	const byId = new Map<string, QuizAttempt>();
+
+	for (const attempt of sortAttemptsDesc(attempts)) {
+		if (!byId.has(attempt.id)) {
+			byId.set(attempt.id, attempt);
+		}
+	}
+
+	return sortAttemptsDesc([...byId.values()]);
+};
+
 const normalizeQuestion = (
 	subject: SubjectData,
 	module: LearningModule,
@@ -420,9 +475,13 @@ export const generateOfflineQuizForModule = async ({
 };
 
 export const saveQuizAttemptOffline = async (attempt: QuizAttempt): Promise<void> => {
-	const raw = await AsyncStorage.getItem(ATTEMPTS_STORAGE_KEY);
-	const existing = raw ? (JSON.parse(raw) as QuizAttempt[]) : [];
-	const updated = [attempt, ...existing].slice(0, 200);
+	if (!isValidQuizAttempt(attempt)) {
+		throw new Error('Invalid quiz attempt payload');
+	}
+
+	const existing = await getOfflineQuizAttempts();
+	const normalized = normalizeQuizAttempt(attempt);
+	const updated = dedupeAttemptsById([normalized, ...existing]).slice(0, 200);
 
 	await AsyncStorage.setItem(ATTEMPTS_STORAGE_KEY, JSON.stringify(updated));
 	await markSyncDirty('attemptsDirty');
@@ -430,7 +489,29 @@ export const saveQuizAttemptOffline = async (attempt: QuizAttempt): Promise<void
 
 export const getOfflineQuizAttempts = async (): Promise<QuizAttempt[]> => {
 	const raw = await AsyncStorage.getItem(ATTEMPTS_STORAGE_KEY);
-	return raw ? (JSON.parse(raw) as QuizAttempt[]) : [];
+	if (!raw) {
+		return [];
+	}
+
+	try {
+		const parsed = JSON.parse(raw) as unknown;
+		if (!Array.isArray(parsed)) {
+			await AsyncStorage.removeItem(ATTEMPTS_STORAGE_KEY);
+			return [];
+		}
+
+		const validAttempts = parsed.filter(isValidQuizAttempt).map(normalizeQuizAttempt);
+		const cleaned = dedupeAttemptsById(validAttempts).slice(0, 200);
+
+		if (cleaned.length !== parsed.length) {
+			await AsyncStorage.setItem(ATTEMPTS_STORAGE_KEY, JSON.stringify(cleaned));
+		}
+
+		return cleaned;
+	} catch {
+		await AsyncStorage.removeItem(ATTEMPTS_STORAGE_KEY);
+		return [];
+	}
 };
 
 export const getCurrentQuizSyncStatus = async (): Promise<QuizSyncStatus> => {
