@@ -14,6 +14,7 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [hasLoggedPermissionWarning, setHasLoggedPermissionWarning] = useState(false);
 
   const syncUserToFirestore = async (firebaseUser: User) => {
     const userRef = doc(db, 'users', firebaseUser.uid);
@@ -41,16 +42,22 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       console.log('DEBUG (AuthContext): Firebase Auth state changed. User exists:', !!firebaseUser);
 
       setUser(firebaseUser);
+      setLoading(false);
 
       if (firebaseUser) {
-        try {
-          await syncUserToFirestore(firebaseUser);
-        } catch (error) {
-          console.error('DEBUG (AuthContext): Failed to sync user profile to Firestore:', error);
-        }
-      }
+        void syncUserToFirestore(firebaseUser).catch((error) => {
+          const code = (error as { code?: string })?.code;
+          if ((code === 'permission-denied' || code === 'firestore/permission-denied') && !hasLoggedPermissionWarning) {
+            console.warn('DEBUG (AuthContext): Firestore permission denied. Login continues with offline mode.');
+            setHasLoggedPermissionWarning(true);
+            return;
+          }
 
-      setLoading(false);
+          if (code !== 'permission-denied' && code !== 'firestore/permission-denied') {
+            console.error('DEBUG (AuthContext): Failed to sync user profile to Firestore:', error);
+          }
+        });
+      }
     });
 
     return unsubscribe;

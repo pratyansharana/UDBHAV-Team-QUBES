@@ -1,5 +1,6 @@
 import React, { useState, useMemo, createContext, ReactNode } from 'react';
 import { useColorScheme } from 'react-native';
+import { MD3DarkTheme, MD3LightTheme, PaperProvider } from 'react-native-paper';
 
 export const QUBES_COLORS = {
   dark: {
@@ -47,10 +48,26 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   };
 
   const colors = isDarkMode ? QUBES_COLORS.dark : QUBES_COLORS.light;
+  const paperTheme = useMemo(
+    () => ({
+      ...(isDarkMode ? MD3DarkTheme : MD3LightTheme),
+      colors: {
+        ...(isDarkMode ? MD3DarkTheme.colors : MD3LightTheme.colors),
+        primary: colors.primary,
+        background: colors.background,
+        surface: colors.surface,
+        surfaceVariant: colors.surfaceVariant,
+        onSurfaceVariant: colors.textSecondary,
+        onSurface: colors.text,
+        error: colors.error,
+      },
+    }),
+    [colors, isDarkMode]
+  );
 
   return (
     <ThemeContext.Provider value={{ isDarkMode, toggleTheme, colors }}>
-      {children}
+      <PaperProvider theme={paperTheme}>{children}</PaperProvider>
     </ThemeContext.Provider>
   );
 };

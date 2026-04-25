@@ -1,0 +1,1386 @@
+﻿{
+    "subjects":  [
+                     {
+                         "id":  "computer-science",
+                         "name":  "Computer Science",
+                         "description":  "Offline-first modules for recursion, algorithmic reasoning, and interview-ready problem solving.",
+                         "modules":  [
+                                         {
+                                             "id":  "recursion-fundamentals",
+                                             "title":  "Recursion Fundamentals",
+                                             "summary":  "Core mental models for recursive problem solving, correctness, and performance.",
+                                             "detailedContent":  "This module builds a deep foundation for recursion by focusing on call-stack behavior, subproblem design, and invariant-based reasoning. Learners explore how to define strict base cases, prove termination using decreasing measures, and trace stack frames for both pre-order and post-order computation. The content also covers common implementation pitfalls such as hidden shared state, incorrect return propagation, and missing branch coverage. By the end, learners should be able to convert verbal problem statements into recursive formulations with explicit correctness arguments and complexity estimates.",
+                                             "learningOutcomes":  [
+                                                                      "Define base cases that are complete and non-overlapping.",
+                                                                      "Trace recursive execution using stack snapshots and return values.",
+                                                                      "Reason about termination with strictly decreasing progress measures.",
+                                                                      "Estimate time and space complexity for linear and branching recursion."
+                                                                  ],
+                                             "estimatedMinutes":  95,
+                                             "questions":  [
+                                                               {
+                                                                   "id":  "recursion-fundamentals-q1",
+                                                                   "question":  "In Recursion Fundamentals, which statement about \u0027Base case design\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Base case design\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Base case design\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Base case design\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Base case design\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Base case design\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-fundamentals-q2",
+                                                                   "question":  "In Recursion Fundamentals, which statement about \u0027Recursive case decomposition\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Recursive case decomposition\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Recursive case decomposition\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Recursive case decomposition\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Recursive case decomposition\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Recursive case decomposition\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-fundamentals-q3",
+                                                                   "question":  "In Recursion Fundamentals, which statement about \u0027Progress measure\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Progress measure\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Progress measure\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Progress measure\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Progress measure\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Progress measure\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-fundamentals-q4",
+                                                                   "question":  "In Recursion Fundamentals, which statement about \u0027Stack frame lifecycle\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Stack frame lifecycle\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Stack frame lifecycle\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Stack frame lifecycle\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Stack frame lifecycle\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Stack frame lifecycle\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-fundamentals-q5",
+                                                                   "question":  "In Recursion Fundamentals, which statement about \u0027Return value propagation\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Return value propagation\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Return value propagation\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Return value propagation\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Return value propagation\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Return value propagation\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-fundamentals-q6",
+                                                                   "question":  "In Recursion Fundamentals, which statement about \u0027Single-branch recursion\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Single-branch recursion\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Single-branch recursion\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Single-branch recursion\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Single-branch recursion\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Single-branch recursion\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-fundamentals-q7",
+                                                                   "question":  "In Recursion Fundamentals, which statement about \u0027Binary recursion tree\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Binary recursion tree\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Binary recursion tree\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Binary recursion tree\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Binary recursion tree\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Binary recursion tree\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-fundamentals-q8",
+                                                                   "question":  "In Recursion Fundamentals, which statement about \u0027Tail recursion basics\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Tail recursion basics\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Tail recursion basics\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Tail recursion basics\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Tail recursion basics\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Tail recursion basics\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-fundamentals-q9",
+                                                                   "question":  "In Recursion Fundamentals, which statement about \u0027Input validation in recursion\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Input validation in recursion\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Input validation in recursion\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Input validation in recursion\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Input validation in recursion\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Input validation in recursion\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-fundamentals-q10",
+                                                                   "question":  "In Recursion Fundamentals, which statement about \u0027Off-by-one boundaries\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Off-by-one boundaries\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Off-by-one boundaries\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Off-by-one boundaries\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Off-by-one boundaries\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Off-by-one boundaries\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-fundamentals-q11",
+                                                                   "question":  "In Recursion Fundamentals, which statement about \u0027Termination proofs\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Termination proofs\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Termination proofs\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Termination proofs\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Termination proofs\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Termination proofs\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-fundamentals-q12",
+                                                                   "question":  "In Recursion Fundamentals, which statement about \u0027Recurrence relation setup\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Recurrence relation setup\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Recurrence relation setup\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Recurrence relation setup\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Recurrence relation setup\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Recurrence relation setup\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-fundamentals-q13",
+                                                                   "question":  "In Recursion Fundamentals, which statement about \u0027Space complexity on call stack\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Space complexity on call stack\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Space complexity on call stack\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Space complexity on call stack\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Space complexity on call stack\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Space complexity on call stack\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-fundamentals-q14",
+                                                                   "question":  "In Recursion Fundamentals, which statement about \u0027Dry-run stack tracing\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Dry-run stack tracing\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Dry-run stack tracing\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Dry-run stack tracing\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Dry-run stack tracing\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Dry-run stack tracing\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-fundamentals-q15",
+                                                                   "question":  "In Recursion Fundamentals, which statement about \u0027Guard conditions\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Guard conditions\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Guard conditions\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Guard conditions\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Guard conditions\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027Guard conditions\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-fundamentals-q16",
+                                                                   "question":  "In Recursion Fundamentals, which statement about \u0027Reference vs value mutation\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Reference vs value mutation\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Reference vs value mutation\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Reference vs value mutation\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Reference vs value mutation\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027Reference vs value mutation\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-fundamentals-q17",
+                                                                   "question":  "In Recursion Fundamentals, which statement about \u0027Pre-order vs post-order logic\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Pre-order vs post-order logic\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Pre-order vs post-order logic\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Pre-order vs post-order logic\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Pre-order vs post-order logic\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027Pre-order vs post-order logic\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-fundamentals-q18",
+                                                                   "question":  "In Recursion Fundamentals, which statement about \u0027Identity element in recursion\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Identity element in recursion\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Identity element in recursion\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Identity element in recursion\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Identity element in recursion\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027Identity element in recursion\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-fundamentals-q19",
+                                                                   "question":  "In Recursion Fundamentals, which statement about \u0027Error handling strategy\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Error handling strategy\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Error handling strategy\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Error handling strategy\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Error handling strategy\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027Error handling strategy\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-fundamentals-q20",
+                                                                   "question":  "In Recursion Fundamentals, which statement about \u0027Test case partitioning\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Test case partitioning\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Test case partitioning\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Test case partitioning\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Test case partitioning\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027Test case partitioning\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               }
+                                                           ]
+                                         },
+                                         {
+                                             "id":  "recursion-tracing-and-debugging",
+                                             "title":  "Recursion Tracing and Debugging",
+                                             "summary":  "Practical debugging workflows for recursive code and stack-level diagnostics.",
+                                             "detailedContent":  "This module focuses on professional debugging workflows for recursive functions. Learners practice instrumenting recursion with structured logs, indentation-based call-depth markers, and deterministic replay of execution paths. The module discusses crash signatures for runaway recursion, stack overflows, and wrong-branch exits. It also introduces assertion-driven debugging, memo inspection, and tracing of mutation across frames. Through repeated trace exercises, learners improve their ability to isolate the exact call where invariants break and produce targeted fixes with regression tests.",
+                                             "learningOutcomes":  [
+                                                                      "Build reproducible traces of recursive execution paths.",
+                                                                      "Identify failure frames from stack overflow and assertion logs.",
+                                                                      "Use call-depth instrumentation to diagnose branch divergence.",
+                                                                      "Write regression tests that lock down fixed recursive bugs."
+                                                                  ],
+                                             "estimatedMinutes":  90,
+                                             "questions":  [
+                                                               {
+                                                                   "id":  "recursion-tracing-and-debugging-q1",
+                                                                   "question":  "In Recursion Tracing and Debugging, which statement about \u0027Call depth logging\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Call depth logging\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Call depth logging\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Call depth logging\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Call depth logging\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Call depth logging\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-tracing-and-debugging-q2",
+                                                                   "question":  "In Recursion Tracing and Debugging, which statement about \u0027Frame indentation patterns\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Frame indentation patterns\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Frame indentation patterns\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Frame indentation patterns\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Frame indentation patterns\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Frame indentation patterns\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-tracing-and-debugging-q3",
+                                                                   "question":  "In Recursion Tracing and Debugging, which statement about \u0027Entry and exit tracing\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Entry and exit tracing\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Entry and exit tracing\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Entry and exit tracing\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Entry and exit tracing\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Entry and exit tracing\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-tracing-and-debugging-q4",
+                                                                   "question":  "In Recursion Tracing and Debugging, which statement about \u0027Assertion checkpoints\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Assertion checkpoints\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Assertion checkpoints\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Assertion checkpoints\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Assertion checkpoints\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Assertion checkpoints\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-tracing-and-debugging-q5",
+                                                                   "question":  "In Recursion Tracing and Debugging, which statement about \u0027Stack overflow diagnosis\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Stack overflow diagnosis\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Stack overflow diagnosis\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Stack overflow diagnosis\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Stack overflow diagnosis\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Stack overflow diagnosis\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-tracing-and-debugging-q6",
+                                                                   "question":  "In Recursion Tracing and Debugging, which statement about \u0027Infinite recursion detection\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Infinite recursion detection\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Infinite recursion detection\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Infinite recursion detection\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Infinite recursion detection\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Infinite recursion detection\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-tracing-and-debugging-q7",
+                                                                   "question":  "In Recursion Tracing and Debugging, which statement about \u0027Null-path handling\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Null-path handling\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Null-path handling\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Null-path handling\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Null-path handling\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Null-path handling\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-tracing-and-debugging-q8",
+                                                                   "question":  "In Recursion Tracing and Debugging, which statement about \u0027Boundary replay strategy\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Boundary replay strategy\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Boundary replay strategy\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Boundary replay strategy\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Boundary replay strategy\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Boundary replay strategy\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-tracing-and-debugging-q9",
+                                                                   "question":  "In Recursion Tracing and Debugging, which statement about \u0027Minimal failing input\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Minimal failing input\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Minimal failing input\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Minimal failing input\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Minimal failing input\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Minimal failing input\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-tracing-and-debugging-q10",
+                                                                   "question":  "In Recursion Tracing and Debugging, which statement about \u0027Invariant violation capture\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Invariant violation capture\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Invariant violation capture\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Invariant violation capture\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Invariant violation capture\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Invariant violation capture\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-tracing-and-debugging-q11",
+                                                                   "question":  "In Recursion Tracing and Debugging, which statement about \u0027Debug print throttling\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Debug print throttling\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Debug print throttling\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Debug print throttling\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Debug print throttling\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Debug print throttling\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-tracing-and-debugging-q12",
+                                                                   "question":  "In Recursion Tracing and Debugging, which statement about \u0027State snapshotting\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027State snapshotting\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027State snapshotting\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027State snapshotting\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027State snapshotting\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027State snapshotting\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-tracing-and-debugging-q13",
+                                                                   "question":  "In Recursion Tracing and Debugging, which statement about \u0027Mutation tracking across frames\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Mutation tracking across frames\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Mutation tracking across frames\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Mutation tracking across frames\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Mutation tracking across frames\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Mutation tracking across frames\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-tracing-and-debugging-q14",
+                                                                   "question":  "In Recursion Tracing and Debugging, which statement about \u0027Branch coverage mapping\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Branch coverage mapping\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Branch coverage mapping\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Branch coverage mapping\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Branch coverage mapping\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Branch coverage mapping\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-tracing-and-debugging-q15",
+                                                                   "question":  "In Recursion Tracing and Debugging, which statement about \u0027Recursion breakpoints\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Recursion breakpoints\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Recursion breakpoints\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Recursion breakpoints\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Recursion breakpoints\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027Recursion breakpoints\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-tracing-and-debugging-q16",
+                                                                   "question":  "In Recursion Tracing and Debugging, which statement about \u0027Exception propagation\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Exception propagation\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Exception propagation\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Exception propagation\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Exception propagation\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027Exception propagation\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-tracing-and-debugging-q17",
+                                                                   "question":  "In Recursion Tracing and Debugging, which statement about \u0027Regression test creation\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Regression test creation\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Regression test creation\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Regression test creation\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Regression test creation\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027Regression test creation\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-tracing-and-debugging-q18",
+                                                                   "question":  "In Recursion Tracing and Debugging, which statement about \u0027Fix verification loop\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Fix verification loop\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Fix verification loop\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Fix verification loop\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Fix verification loop\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027Fix verification loop\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-tracing-and-debugging-q19",
+                                                                   "question":  "In Recursion Tracing and Debugging, which statement about \u0027Trace readability standards\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Trace readability standards\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Trace readability standards\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Trace readability standards\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Trace readability standards\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027Trace readability standards\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-tracing-and-debugging-q20",
+                                                                   "question":  "In Recursion Tracing and Debugging, which statement about \u0027Post-fix complexity check\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Post-fix complexity check\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Post-fix complexity check\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Post-fix complexity check\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Post-fix complexity check\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027Post-fix complexity check\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               }
+                                                           ]
+                                         },
+                                         {
+                                             "id":  "recursion-on-trees-and-graphs",
+                                             "title":  "Recursion on Trees and Graphs",
+                                             "summary":  "Applying recursion to hierarchical and connected data structures.",
+                                             "detailedContent":  "This module extends recursion into structural algorithms on trees and graph-like structures. Learners study traversal patterns, divide-and-conquer aggregation, and safe handling of branching factor growth. For trees, the module covers recursive DFS variants, height/diameter style aggregations, and subtree summarization. For graph scenarios, it introduces visited-state guarding to prevent cycles and repeated work. Special emphasis is given to designing return contracts that combine local node information with child results in a composable way.",
+                                             "learningOutcomes":  [
+                                                                      "Implement recursive DFS for tree traversals and subtree metrics.",
+                                                                      "Design return contracts for multi-child aggregation problems.",
+                                                                      "Prevent cycles with visited-state checks in recursive graph walks.",
+                                                                      "Analyze recursion depth and branching impact on complexity."
+                                                                  ],
+                                             "estimatedMinutes":  110,
+                                             "questions":  [
+                                                               {
+                                                                   "id":  "recursion-on-trees-and-graphs-q1",
+                                                                   "question":  "In Recursion on Trees and Graphs, which statement about \u0027Tree DFS recursion\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Tree DFS recursion\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Tree DFS recursion\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Tree DFS recursion\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Tree DFS recursion\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Tree DFS recursion\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-on-trees-and-graphs-q2",
+                                                                   "question":  "In Recursion on Trees and Graphs, which statement about \u0027Preorder traversal contract\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Preorder traversal contract\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Preorder traversal contract\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Preorder traversal contract\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Preorder traversal contract\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Preorder traversal contract\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-on-trees-and-graphs-q3",
+                                                                   "question":  "In Recursion on Trees and Graphs, which statement about \u0027Inorder traversal contract\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Inorder traversal contract\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Inorder traversal contract\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Inorder traversal contract\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Inorder traversal contract\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Inorder traversal contract\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-on-trees-and-graphs-q4",
+                                                                   "question":  "In Recursion on Trees and Graphs, which statement about \u0027Postorder traversal contract\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Postorder traversal contract\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Postorder traversal contract\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Postorder traversal contract\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Postorder traversal contract\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Postorder traversal contract\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-on-trees-and-graphs-q5",
+                                                                   "question":  "In Recursion on Trees and Graphs, which statement about \u0027Subtree aggregation\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Subtree aggregation\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Subtree aggregation\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Subtree aggregation\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Subtree aggregation\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Subtree aggregation\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-on-trees-and-graphs-q6",
+                                                                   "question":  "In Recursion on Trees and Graphs, which statement about \u0027Leaf node base case\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Leaf node base case\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Leaf node base case\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Leaf node base case\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Leaf node base case\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Leaf node base case\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-on-trees-and-graphs-q7",
+                                                                   "question":  "In Recursion on Trees and Graphs, which statement about \u0027Height computation\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Height computation\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Height computation\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Height computation\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Height computation\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Height computation\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-on-trees-and-graphs-q8",
+                                                                   "question":  "In Recursion on Trees and Graphs, which statement about \u0027Diameter decomposition\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Diameter decomposition\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Diameter decomposition\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Diameter decomposition\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Diameter decomposition\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Diameter decomposition\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-on-trees-and-graphs-q9",
+                                                                   "question":  "In Recursion on Trees and Graphs, which statement about \u0027Path sum recursion\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Path sum recursion\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Path sum recursion\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Path sum recursion\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Path sum recursion\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Path sum recursion\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-on-trees-and-graphs-q10",
+                                                                   "question":  "In Recursion on Trees and Graphs, which statement about \u0027Balanced tree checks\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Balanced tree checks\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Balanced tree checks\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Balanced tree checks\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Balanced tree checks\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Balanced tree checks\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-on-trees-and-graphs-q11",
+                                                                   "question":  "In Recursion on Trees and Graphs, which statement about \u0027Graph visited set\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Graph visited set\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Graph visited set\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Graph visited set\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Graph visited set\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Graph visited set\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-on-trees-and-graphs-q12",
+                                                                   "question":  "In Recursion on Trees and Graphs, which statement about \u0027Cycle prevention\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Cycle prevention\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Cycle prevention\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Cycle prevention\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Cycle prevention\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Cycle prevention\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-on-trees-and-graphs-q13",
+                                                                   "question":  "In Recursion on Trees and Graphs, which statement about \u0027Adjacency recursion strategy\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Adjacency recursion strategy\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Adjacency recursion strategy\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Adjacency recursion strategy\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Adjacency recursion strategy\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Adjacency recursion strategy\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-on-trees-and-graphs-q14",
+                                                                   "question":  "In Recursion on Trees and Graphs, which statement about \u0027Connected component DFS\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Connected component DFS\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Connected component DFS\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Connected component DFS\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Connected component DFS\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Connected component DFS\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-on-trees-and-graphs-q15",
+                                                                   "question":  "In Recursion on Trees and Graphs, which statement about \u0027Back-edge awareness\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Back-edge awareness\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Back-edge awareness\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Back-edge awareness\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Back-edge awareness\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027Back-edge awareness\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-on-trees-and-graphs-q16",
+                                                                   "question":  "In Recursion on Trees and Graphs, which statement about \u0027Branching factor impact\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Branching factor impact\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Branching factor impact\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Branching factor impact\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Branching factor impact\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027Branching factor impact\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-on-trees-and-graphs-q17",
+                                                                   "question":  "In Recursion on Trees and Graphs, which statement about \u0027Recursive pruning\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Recursive pruning\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Recursive pruning\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Recursive pruning\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Recursive pruning\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027Recursive pruning\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-on-trees-and-graphs-q18",
+                                                                   "question":  "In Recursion on Trees and Graphs, which statement about \u0027Node memoization\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Node memoization\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Node memoization\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Node memoization\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Node memoization\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027Node memoization\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-on-trees-and-graphs-q19",
+                                                                   "question":  "In Recursion on Trees and Graphs, which statement about \u0027Composite return tuples\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Composite return tuples\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Composite return tuples\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Composite return tuples\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Composite return tuples\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027Composite return tuples\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "recursion-on-trees-and-graphs-q20",
+                                                                   "question":  "In Recursion on Trees and Graphs, which statement about \u0027Traversal correctness proof\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Traversal correctness proof\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Traversal correctness proof\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Traversal correctness proof\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Traversal correctness proof\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027Traversal correctness proof\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               }
+                                                           ]
+                                         },
+                                         {
+                                             "id":  "dynamic-programming-via-recursion",
+                                             "title":  "Dynamic Programming via Recursion",
+                                             "summary":  "Transforming expensive recursion into efficient memoized and tabulated solutions.",
+                                             "detailedContent":  "This module links recursion to dynamic programming through overlapping subproblems and optimal substructure analysis. Learners start from naive recursive solutions, derive recurrence equations, and then apply memoization to eliminate duplicate work. The module compares top-down memo recursion with bottom-up tabulation, including trade-offs in readability, stack usage, and iterative state ordering. It also covers cache-key design, invalid-state handling, and correctness checks for transitions. By completion, learners should confidently refactor exponential recursion into polynomial-time approaches.",
+                                             "learningOutcomes":  [
+                                                                      "Detect overlapping subproblems in naive recursion.",
+                                                                      "Add memo caches with valid key and value semantics.",
+                                                                      "Compare top-down and bottom-up strategies for the same recurrence.",
+                                                                      "Validate transition rules and edge-state initialization."
+                                                                  ],
+                                             "estimatedMinutes":  120,
+                                             "questions":  [
+                                                               {
+                                                                   "id":  "dynamic-programming-via-recursion-q1",
+                                                                   "question":  "In Dynamic Programming via Recursion, which statement about \u0027Overlapping subproblems\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Overlapping subproblems\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Overlapping subproblems\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Overlapping subproblems\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Overlapping subproblems\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Overlapping subproblems\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "dynamic-programming-via-recursion-q2",
+                                                                   "question":  "In Dynamic Programming via Recursion, which statement about \u0027Optimal substructure\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Optimal substructure\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Optimal substructure\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Optimal substructure\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Optimal substructure\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Optimal substructure\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "dynamic-programming-via-recursion-q3",
+                                                                   "question":  "In Dynamic Programming via Recursion, which statement about \u0027Memo cache key design\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Memo cache key design\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Memo cache key design\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Memo cache key design\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Memo cache key design\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Memo cache key design\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "dynamic-programming-via-recursion-q4",
+                                                                   "question":  "In Dynamic Programming via Recursion, which statement about \u0027Top-down recursion with memo\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Top-down recursion with memo\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Top-down recursion with memo\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Top-down recursion with memo\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Top-down recursion with memo\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Top-down recursion with memo\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "dynamic-programming-via-recursion-q5",
+                                                                   "question":  "In Dynamic Programming via Recursion, which statement about \u0027Bottom-up state table\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Bottom-up state table\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Bottom-up state table\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Bottom-up state table\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Bottom-up state table\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Bottom-up state table\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "dynamic-programming-via-recursion-q6",
+                                                                   "question":  "In Dynamic Programming via Recursion, which statement about \u0027Transition function correctness\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Transition function correctness\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Transition function correctness\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Transition function correctness\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Transition function correctness\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Transition function correctness\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "dynamic-programming-via-recursion-q7",
+                                                                   "question":  "In Dynamic Programming via Recursion, which statement about \u0027Base-state initialization\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Base-state initialization\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Base-state initialization\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Base-state initialization\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Base-state initialization\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Base-state initialization\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "dynamic-programming-via-recursion-q8",
+                                                                   "question":  "In Dynamic Programming via Recursion, which statement about \u0027Cache hit validation\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Cache hit validation\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Cache hit validation\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Cache hit validation\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Cache hit validation\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Cache hit validation\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "dynamic-programming-via-recursion-q9",
+                                                                   "question":  "In Dynamic Programming via Recursion, which statement about \u0027Time complexity reduction\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Time complexity reduction\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Time complexity reduction\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Time complexity reduction\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Time complexity reduction\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Time complexity reduction\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "dynamic-programming-via-recursion-q10",
+                                                                   "question":  "In Dynamic Programming via Recursion, which statement about \u0027Space trade-off analysis\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Space trade-off analysis\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Space trade-off analysis\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Space trade-off analysis\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Space trade-off analysis\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Space trade-off analysis\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "dynamic-programming-via-recursion-q11",
+                                                                   "question":  "In Dynamic Programming via Recursion, which statement about \u0027State compression basics\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027State compression basics\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027State compression basics\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027State compression basics\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027State compression basics\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027State compression basics\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "dynamic-programming-via-recursion-q12",
+                                                                   "question":  "In Dynamic Programming via Recursion, which statement about \u0027Unreachable state handling\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Unreachable state handling\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Unreachable state handling\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Unreachable state handling\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Unreachable state handling\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Unreachable state handling\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "dynamic-programming-via-recursion-q13",
+                                                                   "question":  "In Dynamic Programming via Recursion, which statement about \u0027Choice diagram mapping\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Choice diagram mapping\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Choice diagram mapping\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Choice diagram mapping\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Choice diagram mapping\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Choice diagram mapping\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "dynamic-programming-via-recursion-q14",
+                                                                   "question":  "In Dynamic Programming via Recursion, which statement about \u0027Recurrence to code translation\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Recurrence to code translation\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Recurrence to code translation\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Recurrence to code translation\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Recurrence to code translation\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Recurrence to code translation\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "dynamic-programming-via-recursion-q15",
+                                                                   "question":  "In Dynamic Programming via Recursion, which statement about \u0027Duplicate work elimination\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Duplicate work elimination\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Duplicate work elimination\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Duplicate work elimination\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Duplicate work elimination\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027Duplicate work elimination\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "dynamic-programming-via-recursion-q16",
+                                                                   "question":  "In Dynamic Programming via Recursion, which statement about \u0027DP debugging strategy\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027DP debugging strategy\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027DP debugging strategy\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027DP debugging strategy\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027DP debugging strategy\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027DP debugging strategy\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "dynamic-programming-via-recursion-q17",
+                                                                   "question":  "In Dynamic Programming via Recursion, which statement about \u0027Memo invalidation rules\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Memo invalidation rules\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Memo invalidation rules\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Memo invalidation rules\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Memo invalidation rules\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027Memo invalidation rules\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "dynamic-programming-via-recursion-q18",
+                                                                   "question":  "In Dynamic Programming via Recursion, which statement about \u0027Tabulation order selection\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Tabulation order selection\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Tabulation order selection\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Tabulation order selection\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Tabulation order selection\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027Tabulation order selection\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "dynamic-programming-via-recursion-q19",
+                                                                   "question":  "In Dynamic Programming via Recursion, which statement about \u0027Hybrid recursive-iterative approach\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Hybrid recursive-iterative approach\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Hybrid recursive-iterative approach\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Hybrid recursive-iterative approach\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Hybrid recursive-iterative approach\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027Hybrid recursive-iterative approach\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "dynamic-programming-via-recursion-q20",
+                                                                   "question":  "In Dynamic Programming via Recursion, which statement about \u0027Performance benchmarking\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Performance benchmarking\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Performance benchmarking\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Performance benchmarking\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Performance benchmarking\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027Performance benchmarking\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               }
+                                                           ]
+                                         },
+                                         {
+                                             "id":  "backtracking-with-recursion",
+                                             "title":  "Backtracking with Recursion",
+                                             "summary":  "Systematic search with recursive branching, constraints, and pruning.",
+                                             "detailedContent":  "This module teaches backtracking as a disciplined recursive search strategy. Learners build candidate states incrementally, validate constraints early, and prune branches that cannot produce valid solutions. The curriculum covers include/exclude recursion patterns, permutation/combination generation, and state rollback mechanics. It also highlights performance engineering through ordering heuristics, forward checking, and bounding functions. Learners finish with the ability to construct clean, testable backtracking templates for scheduling, puzzle solving, and constrained combinatorics.",
+                                             "learningOutcomes":  [
+                                                                      "Model backtracking state with explicit choose-explore-unchoose flow.",
+                                                                      "Apply constraint checks early to reduce branching.",
+                                                                      "Design pruning rules that are safe and high impact.",
+                                                                      "Implement permutation and combination generators with rollback."
+                                                                  ],
+                                             "estimatedMinutes":  115,
+                                             "questions":  [
+                                                               {
+                                                                   "id":  "backtracking-with-recursion-q1",
+                                                                   "question":  "In Backtracking with Recursion, which statement about \u0027Choose-explore-unchoose cycle\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Choose-explore-unchoose cycle\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Choose-explore-unchoose cycle\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Choose-explore-unchoose cycle\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Choose-explore-unchoose cycle\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Choose-explore-unchoose cycle\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "backtracking-with-recursion-q2",
+                                                                   "question":  "In Backtracking with Recursion, which statement about \u0027State rollback integrity\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027State rollback integrity\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027State rollback integrity\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027State rollback integrity\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027State rollback integrity\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027State rollback integrity\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "backtracking-with-recursion-q3",
+                                                                   "question":  "In Backtracking with Recursion, which statement about \u0027Constraint validation timing\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Constraint validation timing\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Constraint validation timing\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Constraint validation timing\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Constraint validation timing\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Constraint validation timing\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "backtracking-with-recursion-q4",
+                                                                   "question":  "In Backtracking with Recursion, which statement about \u0027Early pruning rules\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Early pruning rules\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Early pruning rules\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Early pruning rules\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Early pruning rules\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Early pruning rules\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "backtracking-with-recursion-q5",
+                                                                   "question":  "In Backtracking with Recursion, which statement about \u0027Include-exclude recursion\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Include-exclude recursion\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Include-exclude recursion\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Include-exclude recursion\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Include-exclude recursion\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Include-exclude recursion\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "backtracking-with-recursion-q6",
+                                                                   "question":  "In Backtracking with Recursion, which statement about \u0027Permutation generation\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Permutation generation\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Permutation generation\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Permutation generation\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Permutation generation\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Permutation generation\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "backtracking-with-recursion-q7",
+                                                                   "question":  "In Backtracking with Recursion, which statement about \u0027Combination generation\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Combination generation\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Combination generation\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Combination generation\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Combination generation\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "easy",
+                                                                   "explanation":  "For \u0027Combination generation\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "backtracking-with-recursion-q8",
+                                                                   "question":  "In Backtracking with Recursion, which statement about \u0027Subset search\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Subset search\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Subset search\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Subset search\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Subset search\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Subset search\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "backtracking-with-recursion-q9",
+                                                                   "question":  "In Backtracking with Recursion, which statement about \u0027N-Queens constraint model\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027N-Queens constraint model\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027N-Queens constraint model\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027N-Queens constraint model\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027N-Queens constraint model\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027N-Queens constraint model\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "backtracking-with-recursion-q10",
+                                                                   "question":  "In Backtracking with Recursion, which statement about \u0027Sudoku candidate filtering\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Sudoku candidate filtering\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Sudoku candidate filtering\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Sudoku candidate filtering\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Sudoku candidate filtering\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Sudoku candidate filtering\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "backtracking-with-recursion-q11",
+                                                                   "question":  "In Backtracking with Recursion, which statement about \u0027Branch ordering heuristic\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Branch ordering heuristic\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Branch ordering heuristic\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Branch ordering heuristic\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Branch ordering heuristic\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Branch ordering heuristic\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "backtracking-with-recursion-q12",
+                                                                   "question":  "In Backtracking with Recursion, which statement about \u0027Bounding function design\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Bounding function design\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Bounding function design\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Bounding function design\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Bounding function design\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Bounding function design\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "backtracking-with-recursion-q13",
+                                                                   "question":  "In Backtracking with Recursion, which statement about \u0027Feasibility checks\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Feasibility checks\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Feasibility checks\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Feasibility checks\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Feasibility checks\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Feasibility checks\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "backtracking-with-recursion-q14",
+                                                                   "question":  "In Backtracking with Recursion, which statement about \u0027Search tree depth control\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Search tree depth control\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Search tree depth control\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Search tree depth control\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Search tree depth control\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "medium",
+                                                                   "explanation":  "For \u0027Search tree depth control\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "backtracking-with-recursion-q15",
+                                                                   "question":  "In Backtracking with Recursion, which statement about \u0027Duplicate state avoidance\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Duplicate state avoidance\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Duplicate state avoidance\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Duplicate state avoidance\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Duplicate state avoidance\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027Duplicate state avoidance\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "backtracking-with-recursion-q16",
+                                                                   "question":  "In Backtracking with Recursion, which statement about \u0027Solution recording strategy\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Solution recording strategy\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Solution recording strategy\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Solution recording strategy\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Solution recording strategy\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027Solution recording strategy\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "backtracking-with-recursion-q17",
+                                                                   "question":  "In Backtracking with Recursion, which statement about \u0027Partial solution scoring\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Partial solution scoring\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Partial solution scoring\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Partial solution scoring\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Partial solution scoring\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027Partial solution scoring\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "backtracking-with-recursion-q18",
+                                                                   "question":  "In Backtracking with Recursion, which statement about \u0027Backtracking complexity bounds\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Backtracking complexity bounds\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Backtracking complexity bounds\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Backtracking complexity bounds\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Backtracking complexity bounds\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027Backtracking complexity bounds\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "backtracking-with-recursion-q19",
+                                                                   "question":  "In Backtracking with Recursion, which statement about \u0027Test harness for search\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Test harness for search\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Test harness for search\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Test harness for search\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Test harness for search\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027Test harness for search\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               },
+                                                               {
+                                                                   "id":  "backtracking-with-recursion-q20",
+                                                                   "question":  "In Backtracking with Recursion, which statement about \u0027Optimization of pruning thresholds\u0027 is most accurate?",
+                                                                   "options":  [
+                                                                                   "\u0027Optimization of pruning thresholds\u0027 should be approached with a clear base case, a measurable progress step, and a predictable return path.",
+                                                                                   "\u0027Optimization of pruning thresholds\u0027 is valid only when recursion has no stopping condition.",
+                                                                                   "\u0027Optimization of pruning thresholds\u0027 is best solved by removing all state and all checks.",
+                                                                                   "\u0027Optimization of pruning thresholds\u0027 never needs testing with edge cases."
+                                                                               ],
+                                                                   "answerIndex":  0,
+                                                                   "difficulty":  "hard",
+                                                                   "explanation":  "For \u0027Optimization of pruning thresholds\u0027, robust recursive solutions require a base case, guaranteed progress, and verification on boundary inputs."
+                                                               }
+                                                           ]
+                                         }
+                                     ]
+                     }
+                 ]
+}
