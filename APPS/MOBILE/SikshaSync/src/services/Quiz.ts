@@ -38,6 +38,13 @@ export interface LearningModule {
 	questions: ModuleQuestion[];
 }
 
+export interface SharedModuleImportPayload {
+	id: string;
+	title: string;
+	content: string;
+	hash: string;
+}
+
 export interface SubjectData {
 	id: string;
 	name: string;
@@ -301,6 +308,69 @@ export const addGeneratedModuleOffline = async (
 	await saveSubjectsOffline(updatedSubjects);
 	await markSyncDirty('modulesDirty');
 	return { subjects: updatedSubjects, savedModuleId: nextModule.id };
+};
+
+export const importSharedModuleMetadataOffline = async (
+	payload: SharedModuleImportPayload,
+	defaultSubjectId = 'shared-imports'
+): Promise<{ subjects: SubjectData[]; savedModuleId: string }> => {
+	const subjects = await loadOfflineSubjects();
+	const existingIndex = subjects.findIndex((subject) => subject.id === defaultSubjectId);
+
+	const targetSubject: SubjectData =
+		existingIndex >= 0
+			? subjects[existingIndex]
+			: {
+				id: defaultSubjectId,
+				name: 'Shared Imports',
+				description: 'Modules imported from offline QR sharing.',
+				modules: [],
+			};
+
+	const existingIds = new Set(targetSubject.modules.map((module) => module.id));
+	let uniqueId = payload.id;
+	let suffix = 1;
+	while (existingIds.has(uniqueId)) {
+		suffix += 1;
+		uniqueId = `${payload.id}-${suffix}`;
+	}
+
+	const trimmedContent = payload.content.trim();
+	const summary =
+		trimmedContent.length > 180
+			? `${trimmedContent.slice(0, 177)}...`
+			: trimmedContent;
+
+	const importedModule: LearningModule = {
+		id: uniqueId,
+		title: payload.title,
+		summary: `Imported via offline QR (${payload.hash.slice(0, 10)})`,
+		detailedContent: trimmedContent,
+		learningOutcomes: [
+			summary,
+			'Imported from another device via offline sharing.',
+		],
+		estimatedMinutes: Math.max(5, Math.ceil(trimmedContent.split(/\s+/).length / 170)),
+		questions: [],
+	};
+
+	const nextSubjects = [...subjects];
+	if (existingIndex >= 0) {
+		nextSubjects[existingIndex] = {
+			...targetSubject,
+			modules: [importedModule, ...targetSubject.modules],
+		};
+	} else {
+		nextSubjects.push({
+			...targetSubject,
+			modules: [importedModule],
+		});
+	}
+
+	await saveSubjectsOffline(nextSubjects);
+	await markSyncDirty('modulesDirty');
+
+	return { subjects: nextSubjects, savedModuleId: importedModule.id };
 };
 
 const findModuleById = (

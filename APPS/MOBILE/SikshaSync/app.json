@@ -3,6 +3,12 @@
     "name": "SikshaSync",
     "slug": "SikshaSync",
     "version": "1.0.0",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/ccc1295a-0ab6-4db0-8ae1-72977c46ac1d"
+    },
     "plugins": [
       "@react-native-google-signin/google-signin"
     ],

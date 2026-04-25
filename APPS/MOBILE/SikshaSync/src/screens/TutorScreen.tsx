@@ -18,8 +18,6 @@ import Markdown from 'react-native-markdown-display';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { collection, addDoc, doc, updateDoc, increment, serverTimestamp } from 'firebase/firestore';
-import * as DocumentPicker from 'expo-document-picker';
-import * as FileSystem from 'expo-file-system';
 
 import { db } from '../firebase/firebaseconfig';
 import { useAuth } from '../navigation/AuthContext';
@@ -121,7 +119,7 @@ export const TutorScreen: React.FC = () => {
   const [chatHistory, setChatHistory] = useState<Message[]>([
     {
       id: '0',
-      text: "Hello! I'm SikshaSync AI. How can I help you learn today?\n\n💡 Tip: You can upload PDF documents and I'll summarize them for you!",
+      text: "Hello! I'm SikshaSync AI. How can I help you learn today?\n\n💡 Tip: You can paste your notes or document text here for a quick summary.",
       sender: 'ai',
       timestamp: Date.now(),
     },
@@ -140,137 +138,11 @@ export const TutorScreen: React.FC = () => {
     ]).start();
   };
 
-  // Function to extract text from PDF (using a server endpoint or local parsing)
-  // Since pure React Native can't parse PDFs directly, we'll use a server endpoint
-  const extractTextFromPDF = async (uri: string): Promise<string> => {
-    try {
-      // Read the file as base64
-      const base64 = await FileSystem.readAsStringAsync(uri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-
-      // Option 1: Send to your backend server for parsing
-      // const response = await fetch('YOUR_BACKEND_URL/api/parse-pdf', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ file: base64, filename: 'document.pdf' }),
-      // });
-      // const data = await response.json();
-      // return data.text;
-
-      // Option 2: For demo, we'll simulate PDF text extraction
-      // In production, use a PDF parsing service or library
-      console.log('[PDF] File loaded, size:', base64.length);
-      
-      // Simulate extraction (replace with actual PDF parsing)
-      return "Sample PDF content extracted. In production, this would contain the actual text from your PDF document.";
-      
-    } catch (error) {
-      console.error('[PDF] Error extracting text:', error);
-      throw new Error('Failed to extract text from PDF');
-    }
-  };
-
-  const handlePDFUpload = async () => {
-    if (!user) {
-      Alert.alert('Error', 'Please login to upload PDFs');
-      return;
-    }
-
-    try {
-      setUploadingPDF(true);
-
-      // Pick PDF document
-      const result = await DocumentPicker.getDocumentAsync({
-        type: 'application/pdf',
-        copyToCacheDirectory: true,
-      });
-
-      if (result.canceled) {
-        setUploadingPDF(false);
-        return;
-      }
-
-      const document = result.assets[0];
-      console.log('[PDF] Selected:', document.name);
-
-      // Show uploading message
-      const uploadMessage: Message = {
-        id: Date.now().toString(),
-        text: `📄 Uploading "${document.name}"...`,
-        sender: 'user',
-        timestamp: Date.now(),
-        type: 'pdf_summary',
-        fileName: document.name,
-      };
-      setChatHistory(prev => [...prev, uploadMessage]);
-      flatListRef.current?.scrollToEnd({ animated: true });
-
-      // Extract text from PDF
-      const extractedText = await extractTextFromPDF(document.uri);
-      
-      if (!extractedText || extractedText.trim().length === 0) {
-        throw new Error('No text content found in PDF');
-      }
-
-      // Update message to show processing
-      const processingMessage: Message = {
-        id: Date.now().toString() + '_processing',
-        text: `📄 Processing "${document.name}"...\nGenerating AI summary...`,
-        sender: 'user',
-        timestamp: Date.now(),
-        type: 'pdf_summary',
-        fileName: document.name,
-      };
-      setChatHistory(prev => [...prev.slice(0, -1), processingMessage]);
-
-      // Prepare context for Gemini
-      const promptForSummary = `Please summarize the following PDF document content. Provide a clear, structured summary with key points, main arguments, and important findings. Keep the summary comprehensive but concise (around 500-800 words).\n\nDocument Name: ${document.name}\n\nContent:\n${extractedText.substring(0, 15000)}`; // Limit to 15000 chars
-
-      // Get summary from Gemini
-      const summary = await GeminiService.askTutor(promptForSummary, []);
-      
-      // Replace processing message with final summary
-      const summaryMessage: Message = {
-        id: Date.now().toString() + '_summary',
-        text: `📄 **PDF Summary: ${document.name}**\n\n${summary}\n\n---\n💡 You can now ask me questions about this document!`,
-        sender: 'ai',
-        timestamp: Date.now(),
-        type: 'pdf_summary',
-        fileName: document.name,
-      };
-      
-      setChatHistory(prev => [...prev.slice(0, -1), summaryMessage]);
-      
-      // Also show in modal
-      setPDFSummary(summary);
-      setShowPDFModal(true);
-
-      // Log analytics
-      const userRef = doc(db, 'users', user.uid);
-      await addDoc(collection(userRef, 'interactionLogs'), {
-        type: 'pdf_upload',
-        fileName: document.name,
-        timestamp: serverTimestamp(),
-        size: document.size,
-      });
-      
-      await updateDoc(userRef, {
-        totalPDFsUploaded: increment(1),
-      });
-
-    } catch (error) {
-      console.error('[PDF] Upload error:', error);
-      Alert.alert(
-        'Upload Failed',
-        'Failed to process PDF. Please try again with a different file.'
-      );
-      
-      // Remove the uploading message on error
-      setChatHistory(prev => prev.filter(msg => msg.type !== 'pdf_summary' || msg.sender !== 'user'));
-    } finally {
-      setUploadingPDF(false);
-    }
+  const handlePDFUpload = () => {
+    Alert.alert(
+      'PDF Upload Disabled',
+      'Document picker is disabled. Paste text from your PDF into chat to get a summary.'
+    );
   };
 
   const handleSendMessage = async () => {
@@ -415,7 +287,7 @@ export const TutorScreen: React.FC = () => {
             </View>
           </View>
           
-          {/* PDF Upload Button */}
+          {/* PDF Button (picker disabled) */}
           <TouchableOpacity
             onPress={handlePDFUpload}
             disabled={uploadingPDF}
@@ -425,8 +297,8 @@ export const TutorScreen: React.FC = () => {
               <ActivityIndicator size="small" color="#00FFCC" />
             ) : (
               <>
-                <MaterialCommunityIcons name="file-pdf-box" size={24} color="#00FFCC" />
-                <Text style={styles.pdfButtonText}>Upload PDF</Text>
+                <MaterialCommunityIcons name="file-cancel" size={24} color="#00FFCC" />
+                <Text style={styles.pdfButtonText}>PDF Disabled</Text>
               </>
             )}
           </TouchableOpacity>
@@ -460,10 +332,10 @@ export const TutorScreen: React.FC = () => {
               marginBottom: insets.bottom > 0 ? insets.bottom : 12,
             },
           ]}
-          elevation={8}
+          elevation={5}
         >
           <TextInput
-            placeholder="Ask anything or upload a PDF..."
+            placeholder="Ask anything or paste document text..."
             value={message}
             onChangeText={setMessage}
             mode="flat"
@@ -512,12 +384,12 @@ export const TutorScreen: React.FC = () => {
           presentationStyle="pageSheet"
           onRequestClose={() => setShowPDFModal(false)}
         >
-          <SafeAreaView style={styles.modalContainer}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>PDF Summary</Text>
+          <SafeAreaView style={modalStyles.modalContainer}>
+            <View style={modalStyles.modalHeader}>
+              <Text style={modalStyles.modalTitle}>PDF Summary</Text>
               <TouchableOpacity
                 onPress={() => setShowPDFModal(false)}
-                style={styles.modalClose}
+                style={modalStyles.modalClose}
               >
                 <MaterialCommunityIcons name="close" size={24} color="#FFFFFF" />
               </TouchableOpacity>
@@ -525,20 +397,20 @@ export const TutorScreen: React.FC = () => {
             <FlatList
               data={[{ id: 'summary', text: pdfSummary }]}
               renderItem={({ item }) => (
-                <View style={styles.modalContent}>
+                <View style={modalStyles.modalContent}>
                   <Markdown style={modalMarkdownStyles}>{item.text}</Markdown>
                 </View>
               )}
               keyExtractor={item => item.id}
               showsVerticalScrollIndicator={false}
             />
-            <View style={styles.modalFooter}>
+            <View style={modalStyles.modalFooter}>
               <Button
                 mode="contained"
                 onPress={() => setShowPDFModal(false)}
                 buttonColor="#00FFCC"
                 textColor="#0A0A0A"
-                style={styles.modalButton}
+                style={modalStyles.modalButton}
               >
                 Close
               </Button>
@@ -587,10 +459,11 @@ const modalStyles = StyleSheet.create({
 });
 
 const modalMarkdownStyles = {
-  ...markdownStyles,
   body: {
-    ...markdownStyles.body,
     color: '#FFFFFF',
+    fontSize: 15,
+    lineHeight: 22,
+    letterSpacing: 0.1,
   },
 };
 

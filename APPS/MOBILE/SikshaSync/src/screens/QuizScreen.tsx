@@ -9,12 +9,16 @@ import {
   generateOfflineQuizForModule,
   getCurrentQuizSyncStatus,
   getAllAvailableModules,
+  importSharedModuleMetadataOffline,
   OfflineQuizQuestion,
   QuizSyncStatus,
   runQuizSyncNow,
   saveQuizAttemptOffline,
 } from '../services/Quiz';
 import { generateLearningModuleWithGemini } from '../services/Chatbot';
+import { OfflineModuleShareSender } from './quiz/OfflineModuleShareSender';
+import { OfflineModuleShareScanner } from './quiz/OfflineModuleShareScanner';
+import { ShareableModule, computeModuleHash } from '../services/OfflineModuleShareService';
 
 export const QuizScreen: React.FC = () => {
   const [isBootstrapping, setIsBootstrapping] = useState(true);
@@ -43,6 +47,9 @@ export const QuizScreen: React.FC = () => {
   const [isGenerateDialogVisible, setIsGenerateDialogVisible] = useState(false);
   const [newModulePrompt, setNewModulePrompt] = useState('');
   const [isGeneratingModule, setIsGeneratingModule] = useState(false);
+  const [isShareDialogVisible, setIsShareDialogVisible] = useState(false);
+  const [isScanDialogVisible, setIsScanDialogVisible] = useState(false);
+  const [shareStatusText, setShareStatusText] = useState<string | null>(null);
 
   const BOOTSTRAP_TIMEOUT_MS = 5000;
 
@@ -50,6 +57,28 @@ export const QuizScreen: React.FC = () => {
     () => allModules.find((module) => module.id === selectedModuleId),
     [allModules, selectedModuleId]
   );
+
+  const selectedShareableModule = useMemo<ShareableModule | null>(() => {
+    if (!selectedModule) {
+      return null;
+    }
+
+    const content = selectedModule.detailedContent?.trim() || selectedModule.summary?.trim() || '';
+    if (!content) {
+      return null;
+    }
+
+    return {
+      id: selectedModule.id,
+      title: selectedModule.title,
+      content,
+      hash: computeModuleHash({
+        id: selectedModule.id,
+        title: selectedModule.title,
+        content,
+      }),
+    };
+  }, [selectedModule]);
 
   const filteredModules = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -140,6 +169,22 @@ export const QuizScreen: React.FC = () => {
 
   const handleDownloadMoreModules = async () => {
     setIsGenerateDialogVisible(true);
+  };
+
+  const handleImportedModule = async (module: ShareableModule) => {
+    const result = await importSharedModuleMetadataOffline({
+      id: module.id,
+      title: module.title,
+      content: module.content,
+      hash: module.hash,
+    });
+
+    await refreshModules();
+    setSelectedModuleId(result.savedModuleId);
+    setShareStatusText(`Imported module: ${module.title}`);
+    setSyncStatus('syncing');
+    const status = await runQuizSyncNow();
+    setSyncStatus(status);
   };
 
   const handleGenerateModuleFromPrompt = async () => {
@@ -370,6 +415,36 @@ export const QuizScreen: React.FC = () => {
             <Text variant="titleMedium" style={styles.availableTitle}>{selectedModule.title}</Text>
             <Text style={styles.moduleSummary}>{selectedModule.summary}</Text>
             <Text style={styles.moduleDetails}>{selectedModule.detailedContent}</Text>
+
+            <View style={styles.shareButtonRow}>
+              <Button
+                mode="outlined"
+                textColor="#D3D3D3"
+                style={styles.shareActionButton}
+                onPress={() => {
+                  setShareStatusText(null);
+                  setIsScanDialogVisible(true);
+                }}
+              >
+                Scan Shared Module
+              </Button>
+
+              <Button
+                mode="contained"
+                buttonColor="#00FFCC"
+                textColor="#0A0A0A"
+                style={styles.shareActionButton}
+                disabled={!selectedShareableModule}
+                onPress={() => {
+                  setShareStatusText(null);
+                  setIsShareDialogVisible(true);
+                }}
+              >
+                Share via QR
+              </Button>
+            </View>
+
+            {shareStatusText ? <Text style={styles.shareStatusText}>{shareStatusText}</Text> : null}
           </View>
         ) : null}
 
@@ -489,6 +564,48 @@ export const QuizScreen: React.FC = () => {
         </View>
 
         <Portal>
+          <Dialog
+            visible={isShareDialogVisible}
+            onDismiss={() => setIsShareDialogVisible(false)}
+            style={styles.generateDialog}
+          >
+            <Dialog.Title style={styles.generateDialogTitle}>Offline Module QR</Dialog.Title>
+            <Dialog.Content>
+              <Text style={styles.generateDialogHint}>
+                This QR contains compressed module metadata with checksum and hash validation.
+              </Text>
+              {selectedShareableModule ? (
+                <OfflineModuleShareSender module={selectedShareableModule} />
+              ) : (
+                <Text style={styles.generateDialogHint}>Module content is empty and cannot be shared.</Text>
+              )}
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button textColor="#BEBEBE" onPress={() => setIsShareDialogVisible(false)}>
+                Close
+              </Button>
+            </Dialog.Actions>
+          </Dialog>
+
+          <Dialog
+            visible={isScanDialogVisible}
+            onDismiss={() => setIsScanDialogVisible(false)}
+            style={styles.generateDialog}
+          >
+            <Dialog.Title style={styles.generateDialogTitle}>Scan Offline Module</Dialog.Title>
+            <Dialog.Content>
+              <Text style={styles.generateDialogHint}>
+                Scanner validates schema, checksum, module hash, and export freshness timestamp.
+              </Text>
+              <OfflineModuleShareScanner onModuleImported={handleImportedModule} />
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button textColor="#BEBEBE" onPress={() => setIsScanDialogVisible(false)}>
+                Close
+              </Button>
+            </Dialog.Actions>
+          </Dialog>
+
           <Dialog visible={isGenerateDialogVisible} onDismiss={() => !isGeneratingModule && setIsGenerateDialogVisible(false)} style={styles.generateDialog}>
             <Dialog.Title style={styles.generateDialogTitle}>Generate Module with Gemini</Dialog.Title>
             <Dialog.Content>
@@ -697,6 +814,20 @@ const styles = StyleSheet.create({
     marginTop: 6,
     fontSize: 12,
     lineHeight: 18,
+  },
+  shareButtonRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 12,
+  },
+  shareActionButton: {
+    flex: 1,
+    borderColor: '#2E2E2E',
+  },
+  shareStatusText: {
+    marginTop: 10,
+    color: '#8BE8D3',
+    fontSize: 12,
   },
   emptyStateText: {
     color: '#8C8C8C',
