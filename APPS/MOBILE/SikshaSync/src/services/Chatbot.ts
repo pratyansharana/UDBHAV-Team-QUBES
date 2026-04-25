@@ -1,7 +1,23 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import Constants from 'expo-constants';
 import { LearningModule, ModuleQuestion } from './Quiz';
 
-const GEMINI_MODEL = 'gemini-1.5-flash';
+const GEMINI_MODEL = 'gemini-2.5-flash';
+
+const getGeminiApiKey = (): string => {
+	const fromEnv = process.env.EXPO_PUBLIC_GEMINI_API_KEY?.trim();
+	if (fromEnv) {
+		return fromEnv;
+	}
+
+	const extra = (Constants.expoConfig?.extra ?? {}) as Record<string, unknown>;
+	const fromExtra =
+		typeof extra.EXPO_PUBLIC_GEMINI_API_KEY === 'string'
+			? extra.EXPO_PUBLIC_GEMINI_API_KEY.trim()
+			: '';
+
+	return fromExtra;
+};
 
 const parseJsonFromText = (rawText: string): unknown => {
 	const trimmed = rawText.trim();
@@ -89,9 +105,9 @@ const normalizeGeneratedModule = (payload: unknown, topic: string): LearningModu
 };
 
 export const generateLearningModuleWithGemini = async (topic: string): Promise<LearningModule> => {
-	const apiKey = process.env.EXPO_PUBLIC_GEMINI_API_KEY;
+	const apiKey = getGeminiApiKey();
 	if (!apiKey) {
-		throw new Error('Missing EXPO_PUBLIC_GEMINI_API_KEY. Add it to your Expo environment and rebuild.');
+		throw new Error('Missing EXPO_PUBLIC_GEMINI_API_KEY. Restart Expo from the app folder after adding it to .env.');
 	}
 
 	const genAI = new GoogleGenerativeAI(apiKey);
