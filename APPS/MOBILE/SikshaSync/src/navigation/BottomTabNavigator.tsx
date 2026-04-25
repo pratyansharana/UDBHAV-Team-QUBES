@@ -39,7 +39,7 @@ export const BottomTabNavigator = () => {
         headerTitleStyle: { fontWeight: '600' },
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} options={{ title: 'Dashboard' }} />
+      <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown:false}} />
       
       <Tab.Screen name="Quiz" component={QuizScreen} options={{ title: 'Quiz' }} />
       <Tab.Screen name="Tutor" component={TutorScreen} options={{ title: 'AI Tutor', headerShown:false }} />

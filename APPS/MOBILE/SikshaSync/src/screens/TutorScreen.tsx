@@ -1,14 +1,27 @@
-import React, { useState, useRef } from 'react';
-import { 
-  View, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator, 
-  Keyboard, StatusBar, KeyboardAvoidingView, Platform 
+import React, { useState, useRef, useEffect } from 'react';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList,
+  ActivityIndicator,
+  Keyboard,
+  StatusBar,
+  KeyboardAvoidingView,
+  Platform,
+  Animated,
+  Alert,
+  Modal,
 } from 'react-native';
-import { Text, TextInput, Surface } from 'react-native-paper';
+import { Text, TextInput, Surface, Button } from 'react-native-paper';
+import Markdown from 'react-native-markdown-display';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { collection, addDoc, doc, updateDoc, increment, serverTimestamp } from 'firebase/firestore';
+import * as DocumentPicker from 'expo-document-picker';
+import * as FileSystem from 'expo-file-system';
 
-import { db } from '../firebase/firebaseconfig'; 
+import { db } from '../firebase/firebaseconfig';
 import { useAuth } from '../navigation/AuthContext';
 import { GeminiService } from '../services/GeminiService';
 import { AnalyticsService } from '../services/AnalyticsService';
@@ -18,162 +31,839 @@ interface Message {
   text: string;
   sender: 'user' | 'ai';
   timestamp: number;
+  type?: 'text' | 'pdf_summary';
+  fileName?: string;
 }
+
+// Animated 3-dot typing indicator component
+const TypingIndicator: React.FC = () => {
+  const dot1 = useRef(new Animated.Value(0)).current;
+  const dot2 = useRef(new Animated.Value(0)).current;
+  const dot3 = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const bounce = (dot: Animated.Value, delay: number) =>
+      Animated.loop(
+        Animated.sequence([
+          Animated.delay(delay),
+          Animated.timing(dot, { toValue: -6, duration: 280, useNativeDriver: true }),
+          Animated.timing(dot, { toValue: 0, duration: 280, useNativeDriver: true }),
+          Animated.delay(600),
+        ])
+      );
+
+    const a1 = bounce(dot1, 0);
+    const a2 = bounce(dot2, 160);
+    const a3 = bounce(dot3, 320);
+    a1.start(); a2.start(); a3.start();
+    return () => { a1.stop(); a2.stop(); a3.stop(); };
+  }, []);
+
+  return (
+    <View style={typingStyles.row}>
+      <View style={typingStyles.avatarBox}>
+        <MaterialCommunityIcons name="robot" size={16} color="#0A0A0A" />
+      </View>
+      <View style={typingStyles.bubble}>
+        {[dot1, dot2, dot3].map((dot, i) => (
+          <Animated.View
+            key={i}
+            style={[typingStyles.dot, { transform: [{ translateY: dot }] }]}
+          />
+        ))}
+      </View>
+    </View>
+  );
+};
+
+const typingStyles = StyleSheet.create({
+  row: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    marginBottom: 14,
+    marginTop: 2,
+  },
+  avatarBox: {
+    backgroundColor: '#00FFCC',
+    padding: 7,
+    borderRadius: 10,
+    marginRight: 8,
+    alignSelf: 'flex-end',
+    marginBottom: 2,
+  },
+  bubble: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1C1C1C',
+    borderRadius: 18,
+    borderBottomLeftRadius: 5,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    gap: 5,
+    borderWidth: 1,
+    borderColor: '#2A2A2A',
+  },
+  dot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    backgroundColor: '#00FFCC',
+  },
+});
 
 export const TutorScreen: React.FC = () => {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [inputFocused, setInputFocused] = useState(false);
+  const [uploadingPDF, setUploadingPDF] = useState(false);
+  const [showPDFModal, setShowPDFModal] = useState(false);
+  const [pdfSummary, setPDFSummary] = useState('');
   const [chatHistory, setChatHistory] = useState<Message[]>([
-    { id: '0', text: "Hello! I'm SikshaSync AI. How can I help you learn today?", sender: 'ai', timestamp: Date.now() }
+    {
+      id: '0',
+      text: "Hello! I'm SikshaSync AI. How can I help you learn today?\n\n💡 Tip: You can upload PDF documents and I'll summarize them for you!",
+      sender: 'ai',
+      timestamp: Date.now(),
+    },
   ]);
 
   const flatListRef = useRef<FlatList>(null);
   const sessionStart = useRef(Date.now());
+  const sendScale = useRef(new Animated.Value(1)).current;
   const { user } = useAuth();
+  const insets = useSafeAreaInsets();
+
+  const animateSend = () => {
+    Animated.sequence([
+      Animated.timing(sendScale, { toValue: 0.85, duration: 80, useNativeDriver: true }),
+      Animated.timing(sendScale, { toValue: 1, duration: 80, useNativeDriver: true }),
+    ]).start();
+  };
+
+  // Function to extract text from PDF (using a server endpoint or local parsing)
+  // Since pure React Native can't parse PDFs directly, we'll use a server endpoint
+  const extractTextFromPDF = async (uri: string): Promise<string> => {
+    try {
+      // Read the file as base64
+      const base64 = await FileSystem.readAsStringAsync(uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      // Option 1: Send to your backend server for parsing
+      // const response = await fetch('YOUR_BACKEND_URL/api/parse-pdf', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ file: base64, filename: 'document.pdf' }),
+      // });
+      // const data = await response.json();
+      // return data.text;
+
+      // Option 2: For demo, we'll simulate PDF text extraction
+      // In production, use a PDF parsing service or library
+      console.log('[PDF] File loaded, size:', base64.length);
+      
+      // Simulate extraction (replace with actual PDF parsing)
+      return "Sample PDF content extracted. In production, this would contain the actual text from your PDF document.";
+      
+    } catch (error) {
+      console.error('[PDF] Error extracting text:', error);
+      throw new Error('Failed to extract text from PDF');
+    }
+  };
+
+  const handlePDFUpload = async () => {
+    if (!user) {
+      Alert.alert('Error', 'Please login to upload PDFs');
+      return;
+    }
+
+    try {
+      setUploadingPDF(true);
+
+      // Pick PDF document
+      const result = await DocumentPicker.getDocumentAsync({
+        type: 'application/pdf',
+        copyToCacheDirectory: true,
+      });
+
+      if (result.canceled) {
+        setUploadingPDF(false);
+        return;
+      }
+
+      const document = result.assets[0];
+      console.log('[PDF] Selected:', document.name);
+
+      // Show uploading message
+      const uploadMessage: Message = {
+        id: Date.now().toString(),
+        text: `📄 Uploading "${document.name}"...`,
+        sender: 'user',
+        timestamp: Date.now(),
+        type: 'pdf_summary',
+        fileName: document.name,
+      };
+      setChatHistory(prev => [...prev, uploadMessage]);
+      flatListRef.current?.scrollToEnd({ animated: true });
+
+      // Extract text from PDF
+      const extractedText = await extractTextFromPDF(document.uri);
+      
+      if (!extractedText || extractedText.trim().length === 0) {
+        throw new Error('No text content found in PDF');
+      }
+
+      // Update message to show processing
+      const processingMessage: Message = {
+        id: Date.now().toString() + '_processing',
+        text: `📄 Processing "${document.name}"...\nGenerating AI summary...`,
+        sender: 'user',
+        timestamp: Date.now(),
+        type: 'pdf_summary',
+        fileName: document.name,
+      };
+      setChatHistory(prev => [...prev.slice(0, -1), processingMessage]);
+
+      // Prepare context for Gemini
+      const promptForSummary = `Please summarize the following PDF document content. Provide a clear, structured summary with key points, main arguments, and important findings. Keep the summary comprehensive but concise (around 500-800 words).\n\nDocument Name: ${document.name}\n\nContent:\n${extractedText.substring(0, 15000)}`; // Limit to 15000 chars
+
+      // Get summary from Gemini
+      const summary = await GeminiService.askTutor(promptForSummary, []);
+      
+      // Replace processing message with final summary
+      const summaryMessage: Message = {
+        id: Date.now().toString() + '_summary',
+        text: `📄 **PDF Summary: ${document.name}**\n\n${summary}\n\n---\n💡 You can now ask me questions about this document!`,
+        sender: 'ai',
+        timestamp: Date.now(),
+        type: 'pdf_summary',
+        fileName: document.name,
+      };
+      
+      setChatHistory(prev => [...prev.slice(0, -1), summaryMessage]);
+      
+      // Also show in modal
+      setPDFSummary(summary);
+      setShowPDFModal(true);
+
+      // Log analytics
+      const userRef = doc(db, 'users', user.uid);
+      await addDoc(collection(userRef, 'interactionLogs'), {
+        type: 'pdf_upload',
+        fileName: document.name,
+        timestamp: serverTimestamp(),
+        size: document.size,
+      });
+      
+      await updateDoc(userRef, {
+        totalPDFsUploaded: increment(1),
+      });
+
+    } catch (error) {
+      console.error('[PDF] Upload error:', error);
+      Alert.alert(
+        'Upload Failed',
+        'Failed to process PDF. Please try again with a different file.'
+      );
+      
+      // Remove the uploading message on error
+      setChatHistory(prev => prev.filter(msg => msg.type !== 'pdf_summary' || msg.sender !== 'user'));
+    } finally {
+      setUploadingPDF(false);
+    }
+  };
 
   const handleSendMessage = async () => {
     if (!message.trim() || !user || loading) return;
 
-    const currentMsg = message;
-    const userMessage: Message = { id: Date.now().toString(), text: currentMsg, sender: 'user', timestamp: Date.now() };
-    
+    animateSend();
+    const currentMsg = message.trim();
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      text: currentMsg,
+      sender: 'user',
+      timestamp: Date.now(),
+    };
+
     setChatHistory(prev => [...prev, userMessage]);
     setMessage('');
     setLoading(true);
     Keyboard.dismiss();
 
-    console.log("[TUTOR] Sending message to AI:", currentMsg);
+    console.log('[TUTOR] Sending message to AI:', currentMsg);
 
     try {
-      // 1. Prepare history for memory
+      // Prepare history for memory
       const formattedHistory = chatHistory
-        .filter(m => m.id !== '0') 
+        .filter(m => m.id !== '0')
         .map(m => ({
           role: m.sender === 'user' ? ('user' as const) : ('model' as const),
-          text: m.text
+          text: m.text,
         }));
 
-      // 2. Get AI Response
+      // Get AI Response
       const aiResponse = await GeminiService.askTutor(currentMsg, formattedHistory);
-      console.log("[TUTOR] AI Response received.");
-      
-      const aiMessage: Message = { id: Date.now().toString() + 'ai', text: aiResponse, sender: 'ai', timestamp: Date.now() };
+      console.log('[TUTOR] AI Response received.');
+
+      const aiMessage: Message = {
+        id: Date.now().toString() + 'ai',
+        text: aiResponse,
+        sender: 'ai',
+        timestamp: Date.now(),
+      };
       setChatHistory(prev => [...prev, aiMessage]);
 
-      // 3. Analytics (WITH DEBUG LOGS)
-      console.log("[ANALYTICS] Preparing data for user:", user.uid);
+      // Analytics
+      console.log('[ANALYTICS] Preparing data for user:', user.uid);
       const userRef = doc(db, 'users', user.uid);
-      
+
       const payload = {
         message: currentMsg,
         timestamp: serverTimestamp(),
         hour: new Date().getHours(),
         type: 'tutor_chat',
       };
-      
+
       await addDoc(collection(userRef, 'interactionLogs'), payload);
-      console.log("[ANALYTICS] Log saved to interactionLogs.");
+      console.log('[ANALYTICS] Log saved to interactionLogs.');
 
       await updateDoc(userRef, {
         totalQuestionsAsked: increment(1),
-        [`productivityMap.${new Date().getHours()}`]: increment(1)
+        [`productivityMap.${new Date().getHours()}`]: increment(1),
       });
-      console.log("[ANALYTICS] User metrics updated.");
+      console.log('[ANALYTICS] User metrics updated.');
 
       // Pace Calculation
       const durationHours = (Date.now() - sessionStart.current) / 3600000;
       if (durationHours > 0.01) {
         await AnalyticsService.updateLearningPace(user.uid, durationHours * 60);
       }
-
     } catch (error) {
-      console.error("[TUTOR] Error during operation:", error);
+      console.error('[TUTOR] Error during operation:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const renderMessage = ({ item }: { item: Message }) => (
-    <View style={[styles.messageRow, item.sender === 'user' ? styles.userRow : styles.aiRow]}>
+  const renderMessage = ({ item, index }: { item: Message; index: number }) => (
+    <View
+      style={[
+        styles.messageRow,
+        item.sender === 'user' ? styles.userRow : styles.aiRow,
+        index === 0 && { marginTop: 8 },
+      ]}
+    >
       {item.sender === 'ai' && (
-        <View style={styles.avatar}><MaterialCommunityIcons name="robot" size={18} color="#0A0A0A" /></View>
+        <View style={styles.avatar}>
+          <MaterialCommunityIcons name="robot" size={16} color="#0A0A0A" />
+        </View>
       )}
-      <View style={[styles.messageBubble, item.sender === 'user' ? styles.userBubble : styles.aiBubble]}>
-        <Text style={[styles.messageText, item.sender === 'ai' && { color: '#0A0A0A' }]}>{item.text}</Text>
+      <View
+        style={[
+          styles.messageBubble,
+          item.sender === 'user' ? styles.userBubble : styles.aiBubble,
+        ]}
+      >
+        {item.sender === 'ai' ? (
+          <Markdown style={markdownStyles}>{item.text}</Markdown>
+        ) : (
+          <Text style={[styles.messageText, { color: '#FFFFFF' }]}>{item.text}</Text>
+        )}
+        <Text
+          style={[
+            styles.timestamp,
+            item.sender === 'ai' ? { color: 'rgba(10,10,10,0.45)' } : { color: 'rgba(255,255,255,0.35)' },
+          ]}
+        >
+          {new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        </Text>
       </View>
       {item.sender === 'user' && (
-        <View style={styles.avatarUser}><MaterialCommunityIcons name="account" size={18} color="#0A0A0A" /></View>
+        <View style={styles.avatarUser}>
+          <MaterialCommunityIcons name="account" size={16} color="#0A0A0A" />
+        </View>
       )}
     </View>
   );
 
+  const renderTypingIndicator = () => {
+    if (!loading && !uploadingPDF) return null;
+    return <TypingIndicator />;
+  };
+
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <StatusBar barStyle="light-content" />
-      <View style={styles.header}>
-        <View style={styles.headerContent}>
-          <View style={styles.logoCircle}><MaterialCommunityIcons name="robot" size={22} color="#0A0A0A" /></View>
-          <View style={styles.headerText}>
-            <Text style={styles.headerTitle}>SikshaSync Tutor</Text>
-            <Text style={styles.headerSubtitle}>AI Powered Learning</Text>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
+    >
+      <SafeAreaView style={styles.container} edges={['top']}>
+        <StatusBar barStyle="light-content" backgroundColor="#0A0A0A" />
+
+        {/* Header with PDF Upload Button */}
+        <View style={styles.header}>
+          <View style={styles.headerContent}>
+            <View style={styles.logoCircle}>
+              <MaterialCommunityIcons name="robot" size={20} color="#0A0A0A" />
+            </View>
+            <View style={styles.headerText}>
+              <Text style={styles.headerTitle}>SikshaSync Tutor</Text>
+              <View style={styles.onlineBadge}>
+                <View style={styles.onlineDot} />
+                <Text style={styles.headerSubtitle}>AI Powered · Online</Text>
+              </View>
+            </View>
           </View>
+          
+          {/* PDF Upload Button */}
+          <TouchableOpacity
+            onPress={handlePDFUpload}
+            disabled={uploadingPDF}
+            style={styles.pdfButton}
+          >
+            {uploadingPDF ? (
+              <ActivityIndicator size="small" color="#00FFCC" />
+            ) : (
+              <>
+                <MaterialCommunityIcons name="file-pdf-box" size={24} color="#00FFCC" />
+                <Text style={styles.pdfButtonText}>Upload PDF</Text>
+              </>
+            )}
+          </TouchableOpacity>
         </View>
-      </View>
-      <FlatList
-        ref={flatListRef}
-        data={chatHistory}
-        renderItem={renderMessage}
-        keyExtractor={item => item.id}
-        contentContainerStyle={styles.chatList}
-        showsVerticalScrollIndicator={false}
-        onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
-      />
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <Surface style={styles.inputContainer} elevation={4}>
+
+        {/* Chat List */}
+        <FlatList
+          ref={flatListRef}
+          data={chatHistory}
+          renderItem={renderMessage}
+          keyExtractor={item => item.id}
+          contentContainerStyle={styles.chatList}
+          showsVerticalScrollIndicator={false}
+          onContentSizeChange={() =>
+            flatListRef.current?.scrollToEnd({ animated: true })
+          }
+          onLayout={() =>
+            flatListRef.current?.scrollToEnd({ animated: false })
+          }
+          ListFooterComponent={renderTypingIndicator}
+          keyboardDismissMode="interactive"
+          automaticallyAdjustKeyboardInsets={Platform.OS === 'ios'}
+        />
+
+        {/* Input Bar */}
+        <Surface
+          style={[
+            styles.inputContainer,
+            {
+              borderColor: inputFocused ? '#00FFCC' : 'transparent',
+              marginBottom: insets.bottom > 0 ? insets.bottom : 12,
+            },
+          ]}
+          elevation={8}
+        >
           <TextInput
-            placeholder="Ask anything..."
+            placeholder="Ask anything or upload a PDF..."
             value={message}
             onChangeText={setMessage}
             mode="flat"
             multiline
+            maxLength={2000}
             style={styles.input}
             underlineColor="transparent"
             activeUnderlineColor="transparent"
-            placeholderTextColor="#888"
-            theme={{ colors: { background: 'transparent', text: '#FFFFFF', primary: '#00FFCC' } }}
+            placeholderTextColor="#555"
+            contentStyle={{ color: '#FFFFFF' }}
+            textColor="#FFFFFF"
+            onFocus={() => setInputFocused(true)}
+            onBlur={() => setInputFocused(false)}
+            onSubmitEditing={handleSendMessage}
+            blurOnSubmit={false}
+            theme={{
+              colors: {
+                background: 'transparent',
+                primary: '#00FFCC',
+              },
+            }}
           />
-          <TouchableOpacity
-            onPress={handleSendMessage}
-            style={[styles.sendButton, (!message.trim() || loading) && { opacity: 0.4 }]}
-            disabled={loading || !message.trim()}
-          >
-            {loading ? <ActivityIndicator color="#0A0A0A" /> : <MaterialCommunityIcons name="send" size={22} color="#0A0A0A" />}
-          </TouchableOpacity>
+          <Animated.View style={{ transform: [{ scale: sendScale }] }}>
+            <TouchableOpacity
+              onPress={handleSendMessage}
+              style={[
+                styles.sendButton,
+                (!message.trim() || loading) && styles.sendButtonDisabled,
+              ]}
+              disabled={loading || !message.trim()}
+              activeOpacity={0.8}
+            >
+              {loading ? (
+                <ActivityIndicator color="#0A0A0A" size="small" />
+              ) : (
+                <MaterialCommunityIcons name="send" size={20} color="#0A0A0A" />
+              )}
+            </TouchableOpacity>
+          </Animated.View>
         </Surface>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+
+        {/* PDF Summary Modal */}
+        <Modal
+          visible={showPDFModal}
+          animationType="slide"
+          presentationStyle="pageSheet"
+          onRequestClose={() => setShowPDFModal(false)}
+        >
+          <SafeAreaView style={styles.modalContainer}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>PDF Summary</Text>
+              <TouchableOpacity
+                onPress={() => setShowPDFModal(false)}
+                style={styles.modalClose}
+              >
+                <MaterialCommunityIcons name="close" size={24} color="#FFFFFF" />
+              </TouchableOpacity>
+            </View>
+            <FlatList
+              data={[{ id: 'summary', text: pdfSummary }]}
+              renderItem={({ item }) => (
+                <View style={styles.modalContent}>
+                  <Markdown style={modalMarkdownStyles}>{item.text}</Markdown>
+                </View>
+              )}
+              keyExtractor={item => item.id}
+              showsVerticalScrollIndicator={false}
+            />
+            <View style={styles.modalFooter}>
+              <Button
+                mode="contained"
+                onPress={() => setShowPDFModal(false)}
+                buttonColor="#00FFCC"
+                textColor="#0A0A0A"
+                style={styles.modalButton}
+              >
+                Close
+              </Button>
+            </View>
+          </SafeAreaView>
+        </Modal>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0A0A0A' },
-  header: { paddingHorizontal: 20, paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: '#1F1F1F' },
-  headerContent: { flexDirection: 'row', alignItems: 'center' },
-  logoCircle: { backgroundColor: '#00FFCC', padding: 10, borderRadius: 12 },
-  headerText: { marginLeft: 12 },
-  headerTitle: { color: '#FFFFFF', fontSize: 18, fontWeight: '700' },
-  headerSubtitle: { color: '#AAAAAA', fontSize: 12 },
-  chatList: { padding: 16 },
-  messageRow: { flexDirection: 'row', alignItems: 'flex-end', marginBottom: 14 },
-  userRow: { justifyContent: 'flex-end' },
-  aiRow: { justifyContent: 'flex-start' },
-  avatar: { backgroundColor: '#00FFCC', padding: 6, borderRadius: 8, marginRight: 8 },
-  avatarUser: { backgroundColor: '#FFFFFF', padding: 6, borderRadius: 8, marginLeft: 8 },
-  messageBubble: { padding: 14, borderRadius: 16, maxWidth: '75%' },
-  userBubble: { backgroundColor: '#1F1F1F', borderBottomRightRadius: 4 },
-  aiBubble: { backgroundColor: '#00FFCC', borderBottomLeftRadius: 4 },
-  messageText: { color: '#FFFFFF', fontSize: 15, lineHeight: 22 },
-  inputContainer: { flexDirection: 'row', alignItems: 'center', margin: 16, borderRadius: 16, paddingHorizontal: 10, paddingVertical: 6, backgroundColor: '#151515' },
-  input: { flex: 1, fontSize: 15, color: '#FFFFFF', maxHeight: 100, backgroundColor: 'transparent' },
-  sendButton: { backgroundColor: '#00FFCC', padding: 12, borderRadius: 12, marginLeft: 8 }
+// Add modal styles
+const modalStyles = StyleSheet.create({
+  modalContainer: {
+    flex: 1,
+    backgroundColor: '#0A0A0A',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#1A1A1A',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#00FFCC',
+  },
+  modalClose: {
+    padding: 8,
+  },
+  modalContent: {
+    padding: 20,
+  },
+  modalFooter: {
+    padding: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#1A1A1A',
+  },
+  modalButton: {
+    borderRadius: 12,
+  },
 });
+
+const modalMarkdownStyles = {
+  ...markdownStyles,
+  body: {
+    ...markdownStyles.body,
+    color: '#FFFFFF',
+  },
+};
+
+// Add PDF button style
+const pdfButtonStyles = {
+  pdfButton: {
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    backgroundColor: '#1A1A1A',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    gap: 6,
+  },
+  pdfButtonText: {
+    color: '#00FFCC',
+    fontSize: 12,
+    fontWeight: '600' as const,
+  },
+};
+
+// Merge styles
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#0A0A0A',
+  },
+  header: {
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: '#1A1A1A',
+    backgroundColor: '#0A0A0A',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  headerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  logoCircle: {
+    backgroundColor: '#00FFCC',
+    padding: 10,
+    borderRadius: 14,
+  },
+  headerText: {
+    marginLeft: 12,
+  },
+  headerTitle: {
+    color: '#FFFFFF',
+    fontSize: 17,
+    fontWeight: '700',
+    letterSpacing: 0.2,
+  },
+  onlineBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 2,
+  },
+  onlineDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#00FFCC',
+    marginRight: 5,
+  },
+  headerSubtitle: {
+    color: '#666',
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  pdfButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1A1A1A',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    gap: 6,
+  },
+  pdfButtonText: {
+    color: '#00FFCC',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  chatList: {
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 8,
+    flexGrow: 1,
+  },
+  messageRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    marginBottom: 12,
+  },
+  userRow: {
+    justifyContent: 'flex-end',
+  },
+  aiRow: {
+    justifyContent: 'flex-start',
+  },
+  avatar: {
+    backgroundColor: '#00FFCC',
+    padding: 7,
+    borderRadius: 10,
+    marginRight: 8,
+    alignSelf: 'flex-end',
+    marginBottom: 2,
+  },
+  avatarUser: {
+    backgroundColor: '#FFFFFF',
+    padding: 7,
+    borderRadius: 10,
+    marginLeft: 8,
+    alignSelf: 'flex-end',
+    marginBottom: 2,
+  },
+  messageBubble: {
+    padding: 12,
+    paddingHorizontal: 14,
+    borderRadius: 18,
+    maxWidth: '80%',
+  },
+  userBubble: {
+    backgroundColor: '#1E1E1E',
+    borderBottomRightRadius: 5,
+    borderWidth: 1,
+    borderColor: '#2A2A2A',
+  },
+  aiBubble: {
+    backgroundColor: '#00FFCC',
+    borderBottomLeftRadius: 5,
+  },
+  messageText: {
+    fontSize: 15,
+    lineHeight: 22,
+    letterSpacing: 0.1,
+  },
+  timestamp: {
+    fontSize: 10,
+    marginTop: 5,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    marginHorizontal: 12,
+    marginTop: 8,
+    borderRadius: 20,
+    paddingHorizontal: 6,
+    paddingVertical: 6,
+    backgroundColor: '#151515',
+    borderWidth: 1.5,
+  },
+  input: {
+    flex: 1,
+    fontSize: 15,
+    color: '#FFFFFF',
+    maxHeight: 120,
+    minHeight: 40,
+    backgroundColor: 'transparent',
+    paddingTop: Platform.OS === 'ios' ? 8 : 0,
+  },
+  sendButton: {
+    backgroundColor: '#00FFCC',
+    padding: 11,
+    borderRadius: 14,
+    marginLeft: 6,
+    alignSelf: 'flex-end',
+    marginBottom: 2,
+  },
+  sendButtonDisabled: {
+    opacity: 0.35,
+  },
+});
+
+// Merge markdown styles
+const markdownStyles = {
+  body: {
+    color: '#0A0A0A',
+    fontSize: 15,
+    lineHeight: 22,
+    letterSpacing: 0.1,
+  },
+  paragraph: {
+    marginTop: 0,
+    marginBottom: 6,
+  },
+  heading1: {
+    fontSize: 18,
+    fontWeight: '700' as const,
+    color: '#0A0A0A',
+    marginBottom: 6,
+    marginTop: 4,
+  },
+  heading2: {
+    fontSize: 16,
+    fontWeight: '700' as const,
+    color: '#0A0A0A',
+    marginBottom: 4,
+    marginTop: 4,
+  },
+  heading3: {
+    fontSize: 15,
+    fontWeight: '600' as const,
+    color: '#0A0A0A',
+    marginBottom: 4,
+    marginTop: 4,
+  },
+  strong: {
+    fontWeight: '700' as const,
+    color: '#0A0A0A',
+  },
+  em: {
+    fontStyle: 'italic' as const,
+    color: '#1A1A1A',
+  },
+  code_inline: {
+    backgroundColor: 'rgba(0,0,0,0.12)',
+    color: '#0A0A0A',
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+    fontSize: 13,
+    borderRadius: 4,
+    paddingHorizontal: 5,
+    paddingVertical: 1,
+  },
+  fence: {
+    backgroundColor: 'rgba(0,0,0,0.15)',
+    borderRadius: 8,
+    padding: 10,
+    marginVertical: 6,
+  },
+  code_block: {
+    backgroundColor: 'rgba(0,0,0,0.15)',
+    borderRadius: 8,
+    padding: 10,
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+    fontSize: 13,
+    color: '#0A0A0A',
+  },
+  bullet_list: {
+    marginVertical: 4,
+  },
+  ordered_list: {
+    marginVertical: 4,
+  },
+  list_item: {
+    marginBottom: 3,
+    flexDirection: 'row' as const,
+  },
+  bullet_list_icon: {
+    color: '#0A0A0A',
+    fontWeight: '700' as const,
+    marginRight: 6,
+  },
+  ordered_list_icon: {
+    color: '#0A0A0A',
+    fontWeight: '700' as const,
+    marginRight: 6,
+  },
+  blockquote: {
+    backgroundColor: 'rgba(0,0,0,0.1)',
+    borderLeftWidth: 3,
+    borderLeftColor: '#0A0A0A',
+    paddingLeft: 10,
+    paddingVertical: 4,
+    marginVertical: 4,
+    borderRadius: 2,
+  },
+  hr: {
+    backgroundColor: 'rgba(0,0,0,0.2)',
+    height: 1,
+    marginVertical: 8,
+  },
+};

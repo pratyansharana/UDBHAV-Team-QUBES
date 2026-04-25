@@ -3,6 +3,9 @@
     "name": "SikshaSync",
     "slug": "SikshaSync",
     "version": "1.0.0",
+    "plugins": [
+      "@react-native-google-signin/google-signin"
+    ],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -29,12 +32,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "e6583b5b-8694-494b-ac59-c2ba7bdbb95b"
+        "projectId": "ccc1295a-0ab6-4db0-8ae1-72977c46ac1d"
       }
     },
-    "owner": "pratyansh_rana",
-    "plugins": [
-      "@react-native-google-signin/google-signin"
-    ]
+    "owner": "pratyansha_rana"
   }
 }

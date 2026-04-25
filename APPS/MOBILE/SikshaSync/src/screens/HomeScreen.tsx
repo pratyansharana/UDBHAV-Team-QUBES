@@ -13,8 +13,8 @@ export const HomeScreen: React.FC = () => {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
           <View>
-            <Text variant="titleMedium" style={styles.kicker}>Dashboard</Text>
-            <Text variant="headlineMedium" style={styles.greeting}>Welcome Back</Text>
+            <Text variant="titleMedium" style={styles.kicker}>Namaste!</Text>
+            <Text variant="headlineMedium" style={styles.greeting}>Welcome Back..</Text>
             <Text variant="bodyMedium" style={styles.subtext}>
               {user?.displayName || user?.email || 'Learner'}
             </Text>
