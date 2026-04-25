@@ -1,36 +1,122 @@
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, RefreshControl } from 'react-native';
-import { Text, Surface, Avatar, Chip, Divider } from 'react-native-paper';
+import React, { useEffect, useMemo, useState } from 'react';
+import { View, StyleSheet, ScrollView } from 'react-native';
+import { Text, Surface, Avatar, Chip } from 'react-native-paper';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase/firebaseconfig';
 import { useAuth } from '../navigation/AuthContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
+interface DashboardStats {
+  totalQuestionsAsked?: number;
+  avgPace?: number;
+  productivityMap?: Record<string, number>;
+  interests?: Record<string, number>;
+  totalPDFsUploaded?: number;
+}
+
+const normalizeSeries = (values: number[], minHeight = 8, maxHeight = 90): number[] => {
+  const max = Math.max(...values, 0);
+  if (max === 0) {
+    return values.map(() => minHeight);
+  }
+
+  return values.map((value) => minHeight + (value / max) * (maxHeight - minHeight));
+};
+
 export const DashboardScreen: React.FC = () => {
   const { user } = useAuth();
-  const [stats, setStats] = useState<any>(null);
-  const [refreshing, setRefreshing] = useState(false);
+  const [stats, setStats] = useState<DashboardStats | null>(null);
 
   useEffect(() => {
     if (!user) return;
     
     // Listen to user document in real-time
-    const unsubscribe = onSnapshot(doc(db, 'users', user.uid), (doc) => {
-      setStats(doc.data());
+    const unsubscribe = onSnapshot(doc(db, 'users', user.uid), (docSnapshot) => {
+      setStats((docSnapshot.data() || null) as DashboardStats | null);
     });
     
     return () => unsubscribe();
   }, [user]);
 
-  if (!stats) return (
-    <View style={styles.center}><Text style={{color: '#fff'}}>Loading Dashboard...</Text></View>
-  );
+  const productivityEntries = useMemo(() => {
+    const map = stats?.productivityMap || {};
+    return Object.entries(map)
+      .map(([hour, value]) => ({ hour, value: Number(value) || 0 }))
+      .sort((first, second) => Number(first.hour) - Number(second.hour));
+  }, [stats?.productivityMap]);
 
-  // Helper: Get Top Interest
-  const getTopInterest = () => {
-    if (!stats.interests) return 'None';
-    return Object.entries(stats.interests).sort((a:any, b:any) => b[1] - a[1])[0][0];
-  };
+  const hourlyTrendData = useMemo(() => {
+    const items = productivityEntries.slice(0, 8);
+    const labels = items.map((item) => `${item.hour}h`);
+    const values = items.map((item) => item.value);
+    if (values.length === 0) {
+      return {
+        labels: ['0h'],
+        values: [0],
+        heights: [12],
+      };
+    }
+
+    return {
+      labels,
+      values,
+      heights: normalizeSeries(values, 12, 92),
+    };
+  }, [productivityEntries]);
+
+  const weeklyBars = useMemo(() => {
+    const sourceValues = productivityEntries.slice(-7).map((item) => item.value);
+    const values = sourceValues.length > 0 ? sourceValues : Array(7).fill(0);
+    const paddedValues = values.length >= 7 ? values : [...values, ...Array(7 - values.length).fill(0)];
+    const labels = ['D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7'];
+    const heights = normalizeSeries(paddedValues, 12, 104);
+
+    return labels.map((label, index) => ({
+      label,
+      value: paddedValues[index],
+      height: heights[index],
+    }));
+  }, [productivityEntries]);
+
+  const interestDistribution = useMemo(() => {
+    const entries = Object.entries(stats?.interests || {}).slice(0, 5);
+    const colors = ['#00FFCC', '#4CF0B3', '#7EE6A9', '#A6D8A2', '#D0C99E'];
+
+    if (entries.length === 0) {
+      return [{ topic: 'No Data', value: 0, color: '#3A3A3A', percentage: 0 }];
+    }
+
+    const total = entries.reduce((sum, [, value]) => sum + (Number(value) || 0), 0);
+
+    return entries.map(([topic, count], index) => {
+      const value = Number(count) || 0;
+      return {
+        topic,
+        value,
+        color: colors[index % colors.length],
+        percentage: total > 0 ? (value / total) * 100 : 0,
+      };
+    });
+  }, [stats?.interests]);
+
+  const topInterest = useMemo(() => {
+    const entries = Object.entries(stats?.interests || {});
+    if (entries.length === 0) return 'None';
+    return entries.sort((first, second) => Number(second[1]) - Number(first[1]))[0][0];
+  }, [stats?.interests]);
+
+  const peakHour = useMemo(() => {
+    if (productivityEntries.length === 0) return 'No data';
+    return `${[...productivityEntries].sort((first, second) => second.value - first.value)[0].hour}:00`;
+  }, [productivityEntries]);
+
+  if (!stats) {
+    return (
+      <View style={styles.center}>
+        <Text style={{ color: '#fff' }}>Loading Dashboard...</Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -63,16 +149,75 @@ export const DashboardScreen: React.FC = () => {
         </Surface>
       </View>
 
+      <View style={styles.statsRow}>
+        <Surface style={styles.halfCard}>
+          <Text style={styles.cardTitle}>Top Interest</Text>
+          <Text style={styles.inlineValue}>{topInterest}</Text>
+        </Surface>
+        <Surface style={styles.halfCard}>
+          <Text style={styles.cardTitle}>PDF Imports</Text>
+          <Text style={styles.statValue}>{stats.totalPDFsUploaded || 0}</Text>
+        </Surface>
+      </View>
+
       {/* 3. Deep Insights */}
       <Surface style={styles.fullCard}>
         <Text style={styles.cardTitle}>Peak Productivity Time</Text>
         <View style={styles.row}>
           <MaterialCommunityIcons name="clock-outline" size={20} color="#00FFCC" />
-          <Text style={styles.statValue}>
-            {Object.keys(stats.productivityMap || {}).length > 0 
-              ? `${Object.entries(stats.productivityMap).sort((a:any, b:any) => b[1] - a[1])[0][0]}:00` 
-              : "No data"}
-          </Text>
+          <Text style={styles.statValue}>{peakHour}</Text>
+        </View>
+      </Surface>
+
+      <Surface style={styles.fullCard}>
+        <Text style={styles.cardTitle}>Hourly Activity Trend</Text>
+        <View style={styles.trendChartWrap}>
+          {hourlyTrendData.heights.map((height, index) => (
+            <View key={`trend-${hourlyTrendData.labels[index]}-${index}`} style={styles.trendColumn}>
+              <View style={[styles.trendBar, { height }]} />
+              <Text style={styles.trendValue}>{hourlyTrendData.values[index]}</Text>
+              <Text style={styles.trendLabel}>{hourlyTrendData.labels[index]}</Text>
+            </View>
+          ))}
+        </View>
+      </Surface>
+
+      <Surface style={styles.fullCard}>
+        <Text style={styles.cardTitle}>7-Slot Learning Intensity</Text>
+        <View style={styles.weeklyChartWrap}>
+          {weeklyBars.map((entry) => (
+            <View key={`week-${entry.label}`} style={styles.weeklyColumn}>
+              <Text style={styles.weeklyValue}>{entry.value}</Text>
+              <View style={[styles.weeklyBar, { height: entry.height }]} />
+              <Text style={styles.weeklyLabel}>{entry.label}</Text>
+            </View>
+          ))}
+        </View>
+      </Surface>
+
+      <Surface style={styles.fullCard}>
+        <Text style={styles.cardTitle}>Interest Mix</Text>
+        <View style={styles.interestBarsWrap}>
+          {interestDistribution.map((entry) => (
+            <View key={`interest-${entry.topic}`} style={styles.interestRow}>
+              <View style={styles.interestRowHead}>
+                <View style={[styles.interestDot, { backgroundColor: entry.color }]} />
+                <Text style={styles.interestTopic}>{entry.topic}</Text>
+                <Text style={styles.interestPercent}>{entry.percentage.toFixed(0)}%</Text>
+              </View>
+              <View style={styles.interestTrack}>
+                <View
+                  style={[
+                    styles.interestFill,
+                    {
+                      backgroundColor: entry.color,
+                      width: `${Math.max(4, entry.percentage)}%`,
+                    },
+                  ]}
+                />
+              </View>
+            </View>
+          ))}
         </View>
       </Surface>
 
@@ -80,7 +225,7 @@ export const DashboardScreen: React.FC = () => {
       <Surface style={styles.fullCard}>
         <Text style={styles.cardTitle}>Key Interests</Text>
         <View style={styles.chipContainer}>
-          {stats.interests ? Object.entries(stats.interests).map(([topic, count]: any) => (
+          {stats.interests ? Object.entries(stats.interests).map(([topic, count]) => (
             <Chip key={topic} style={styles.chip} textStyle={styles.chipText}>
               {topic} ({count})
             </Chip>
@@ -107,7 +252,101 @@ const styles = StyleSheet.create({
   fullCard: { backgroundColor: '#1A1A1A', padding: 20, borderRadius: 16, marginBottom: 15 },
   cardTitle: { color: '#888', fontSize: 12, textTransform: 'uppercase', marginBottom: 5 },
   statValue: { color: '#FFFFFF', fontSize: 24, fontWeight: '800' },
+  inlineValue: { color: '#FFFFFF', fontSize: 18, fontWeight: '700' },
   row: { flexDirection: 'row', alignItems: 'center', marginTop: 10 },
+  chartBlock: { marginTop: 10, borderRadius: 12 },
+  trendChartWrap: {
+    marginTop: 10,
+    paddingVertical: 8,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    minHeight: 138,
+  },
+  trendColumn: {
+    width: '11%',
+    alignItems: 'center',
+  },
+  trendBar: {
+    width: 12,
+    borderRadius: 8,
+    backgroundColor: '#00FFCC',
+    marginBottom: 6,
+  },
+  trendValue: {
+    color: '#D0D0D0',
+    fontSize: 10,
+  },
+  trendLabel: {
+    color: '#8A8A8A',
+    fontSize: 10,
+    marginTop: 2,
+  },
+  weeklyChartWrap: {
+    marginTop: 10,
+    paddingVertical: 8,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    minHeight: 155,
+  },
+  weeklyColumn: {
+    width: '13%',
+    alignItems: 'center',
+  },
+  weeklyValue: {
+    color: '#B9B9B9',
+    fontSize: 10,
+    marginBottom: 4,
+  },
+  weeklyBar: {
+    width: 16,
+    borderRadius: 8,
+    backgroundColor: '#2FD7B4',
+  },
+  weeklyLabel: {
+    color: '#8A8A8A',
+    fontSize: 10,
+    marginTop: 4,
+  },
+  interestBarsWrap: {
+    marginTop: 8,
+    gap: 10,
+  },
+  interestRow: {
+    gap: 6,
+  },
+  interestRowHead: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  interestDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: 8,
+  },
+  interestTopic: {
+    color: '#DCDCDC',
+    flex: 1,
+    fontSize: 12,
+  },
+  interestPercent: {
+    color: '#BDBDBD',
+    fontSize: 11,
+  },
+  interestTrack: {
+    width: '100%',
+    height: 10,
+    borderRadius: 999,
+    backgroundColor: '#2A2A2A',
+    overflow: 'hidden',
+  },
+  interestFill: {
+    height: '100%',
+    borderRadius: 999,
+  },
   chipContainer: { flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 },
   chip: { backgroundColor: '#2E2E2E', margin: 4 },
   chipText: { color: '#FFFFFF' }

@@ -1,5 +1,3 @@
-import pako from 'pako';
-
 export interface ShareableModule {
   id: string;
   title: string;
@@ -155,14 +153,14 @@ export const encodeModuleSharePayload = (
 
   const json = JSON.stringify(envelope);
   const rawBytes = toUtf8Bytes(json);
-  const compressed = pako.deflate(rawBytes, { level: 9 });
-  const payload = `${PAYLOAD_PREFIX}${bytesToBase64(compressed)}`;
+  const payloadBytes = rawBytes;
+  const payload = `${PAYLOAD_PREFIX}${bytesToBase64(payloadBytes)}`;
   const qrPayloadSizeBytes = toUtf8Bytes(payload).length;
 
   return {
     payload,
     rawJsonSizeBytes: rawBytes.length,
-    compressedSizeBytes: compressed.length,
+    compressedSizeBytes: payloadBytes.length,
     qrPayloadSizeBytes,
     fitsSingleQr: qrPayloadSizeBytes <= maxQrPayloadBytes,
     maxQrPayloadBytes,
@@ -179,9 +177,8 @@ export const decodeModuleSharePayload = (
     }
 
     const base64Value = payload.slice(PAYLOAD_PREFIX.length);
-    const compressed = base64ToBytes(base64Value);
-    const inflated = pako.inflate(compressed);
-    const json = fromUtf8Bytes(inflated);
+    const payloadBytes = base64ToBytes(base64Value);
+    const json = fromUtf8Bytes(payloadBytes);
     const parsed = JSON.parse(json) as Partial<ShareEnvelope>;
 
     if (parsed.v !== 1 || parsed.t !== 'module-share' || !parsed.module) {
