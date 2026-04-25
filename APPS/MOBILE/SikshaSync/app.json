@@ -21,10 +21,20 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.pratyansh_rana.SikshaSync"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "e6583b5b-8694-494b-ac59-c2ba7bdbb95b"
+      }
+    },
+    "owner": "pratyansh_rana",
+    "plugins": [
+      "@react-native-google-signin/google-signin"
+    ]
   }
 }
