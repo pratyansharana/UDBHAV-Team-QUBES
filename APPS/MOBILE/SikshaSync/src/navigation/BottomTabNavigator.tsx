@@ -1,7 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useTheme } from 'react-native-paper';
 import { HomeScreen } from '../screens/HomeScreen';
 import { TutorScreen } from '../screens/TutorScreen';
 import { QuizScreen } from '../screens/QuizScreen';
@@ -11,8 +10,6 @@ import { BottomTabParamList } from './types';
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
 export const BottomTabNavigator = () => {
-  const theme = useTheme();
-
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -25,11 +22,18 @@ export const BottomTabNavigator = () => {
 
           return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: theme.colors.primary,
-        tabBarInactiveTintColor: theme.colors.onSurfaceVariant,
+        tabBarActiveTintColor: '#00FFCC',
+        tabBarInactiveTintColor: '#6D6D6D',
+        tabBarStyle: {
+          backgroundColor: '#0F0F0F',
+          borderTopColor: '#262626',
+          height: 64,
+          paddingBottom: 8,
+          paddingTop: 6,
+        },
         headerShown: true,
-        headerStyle: { backgroundColor: theme.colors.surface },
-        headerTintColor: theme.colors.onSurface,
+        headerStyle: { backgroundColor: '#0F0F0F' },
+        headerTintColor: '#FFFFFF',
         headerTitleStyle: { fontWeight: '600' },
       })}
     >

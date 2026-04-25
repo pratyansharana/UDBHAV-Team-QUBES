@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
-import { Text, Card, Button, useTheme, RadioButton, ProgressBar } from 'react-native-paper';
+import { Text, Button, RadioButton, ProgressBar } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export const QuizScreen: React.FC = () => {
-  const theme = useTheme();
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
 
   const mockQuestion = {
@@ -15,117 +15,108 @@ export const QuizScreen: React.FC = () => {
   };
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <View style={styles.header}>
-        <MaterialCommunityIcons name="quiz" size={48} color={theme.colors.primary} />
-        <Text variant="headlineMedium" style={[styles.title, { color: theme.colors.primary }]}>
-          Quiz Mode
-        </Text>
-      </View>
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.content}>
+        <View style={styles.header}>
+          <MaterialCommunityIcons name="quiz" size={44} color="#00FFCC" />
+          <Text variant="headlineMedium" style={styles.title}>Quiz Mode</Text>
+        </View>
 
-      <View style={styles.content}>
-        <Card style={styles.card}>
-          <Card.Content>
-            <View style={styles.progressContainer}>
-              <Text variant="bodySmall">
-                Question {mockQuestion.number} of {mockQuestion.total}
-              </Text>
-              <ProgressBar
-                progress={mockQuestion.number / mockQuestion.total}
-                style={styles.progressBar}
-              />
-            </View>
-
-            <Text
-              variant="titleLarge"
-              style={[styles.question, { marginVertical: 20 }]}
-            >
-              {mockQuestion.question}
+        <View style={styles.card}>
+          <View style={styles.progressContainer}>
+            <Text variant="bodySmall" style={styles.progressLabel}>
+              Question {mockQuestion.number} of {mockQuestion.total}
             </Text>
+            <ProgressBar
+              progress={mockQuestion.number / mockQuestion.total}
+              style={styles.progressBar}
+              color="#00FFCC"
+            />
+          </View>
 
-            <View style={styles.optionsContainer}>
-              {mockQuestion.options.map((option, index) => (
-                <View key={index} style={styles.optionRow}>
-                  <RadioButton
-                    value={option}
-                    status={selectedAnswer === option ? 'checked' : 'unchecked'}
-                    onPress={() => setSelectedAnswer(option)}
-                  />
-                  <Text
-                    variant="bodyMedium"
-                    style={[styles.optionText]}
-                    onPress={() => setSelectedAnswer(option)}
-                  >
-                    {option}
-                  </Text>
-                </View>
-              ))}
-            </View>
-          </Card.Content>
-        </Card>
+          <Text variant="titleLarge" style={[styles.question, { marginVertical: 20 }]}>
+            {mockQuestion.question}
+          </Text>
+
+          <View style={styles.optionsContainer}>
+            {mockQuestion.options.map((option, index) => (
+              <View key={index} style={styles.optionRow}>
+                <RadioButton
+                  value={option}
+                  status={selectedAnswer === option ? 'checked' : 'unchecked'}
+                  onPress={() => setSelectedAnswer(option)}
+                  color="#00FFCC"
+                  uncheckedColor="#6E6E6E"
+                />
+                <Text variant="bodyMedium" style={[styles.optionText]} onPress={() => setSelectedAnswer(option)}>
+                  {option}
+                </Text>
+              </View>
+            ))}
+          </View>
+        </View>
 
         <View style={styles.buttonContainer}>
-          <Button mode="outlined" style={styles.button}>
+          <Button mode="outlined" style={styles.button} textColor="#CFCFCF">
             Previous
           </Button>
-          <Button
-            mode="contained"
-            style={styles.button}
-            disabled={!selectedAnswer}
-          >
+          <Button mode="contained" style={styles.button} buttonColor="#00FFCC" textColor="#0A0A0A" disabled={!selectedAnswer}>
             Next
           </Button>
         </View>
 
-        <Card style={styles.card}>
-          <Card.Content>
-            <Text variant="titleMedium" style={{ marginBottom: 12 }}>
-              Available Quizzes
-            </Text>
-            <Button mode="text" icon="arrow-right">
-              Mathematics Basics
-            </Button>
-            <Button mode="text" icon="arrow-right">
-              Science Chapter 3
-            </Button>
-            <Button mode="text" icon="arrow-right">
-              History MCQ
-            </Button>
-          </Card.Content>
-        </Card>
-      </View>
-    </ScrollView>
+        <View style={styles.card}>
+          <Text variant="titleMedium" style={styles.availableTitle}>Available Quizzes</Text>
+          <Text style={styles.topicItem}>Mathematics Basics</Text>
+          <Text style={styles.topicItem}>Science Chapter 3</Text>
+          <Text style={styles.topicItem}>History MCQ</Text>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#0A0A0A',
   },
   header: {
     alignItems: 'center',
-    paddingVertical: 24,
-    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 20,
   },
   title: {
     marginTop: 12,
-    fontWeight: '600',
+    color: '#FFFFFF',
+    fontWeight: '800',
   },
   content: {
-    padding: 16,
+    paddingHorizontal: 20,
+    paddingBottom: 28,
   },
   card: {
-    marginBottom: 16,
+    marginBottom: 12,
+    backgroundColor: '#1A1A1A',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#252525',
+    padding: 14,
   },
   progressContainer: {
     marginBottom: 16,
   },
+  progressLabel: {
+    color: '#8F8F8F',
+  },
   progressBar: {
     marginTop: 8,
     height: 6,
+    backgroundColor: '#2A2A2A',
   },
   question: {
-    fontWeight: '600',
+    fontWeight: '700',
+    color: '#FFFFFF',
   },
   optionsContainer: {
     marginVertical: 12,
@@ -135,18 +126,35 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 8,
     paddingHorizontal: 8,
+    borderWidth: 1,
+    borderColor: '#2A2A2A',
+    borderRadius: 12,
+    backgroundColor: '#111111',
   },
   optionText: {
     marginLeft: 8,
     flex: 1,
+    color: '#DADADA',
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 16,
+    marginBottom: 12,
   },
   button: {
     flex: 1,
     marginHorizontal: 4,
+    borderColor: '#2E2E2E',
+  },
+  availableTitle: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+    marginBottom: 8,
+  },
+  topicItem: {
+    color: '#C9C9C9',
+    paddingVertical: 6,
+    borderBottomWidth: 1,
+    borderBottomColor: '#242424',
   },
 });

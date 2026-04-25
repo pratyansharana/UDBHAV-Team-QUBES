@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
-import { Text, Card, TextInput, Button, useTheme, Chip } from 'react-native-paper';
+import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { Text, TextInput, Chip } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export const TutorScreen: React.FC = () => {
-  const theme = useTheme();
   const [message, setMessage] = useState('');
 
   const handleSendMessage = () => {
@@ -14,60 +14,30 @@ export const TutorScreen: React.FC = () => {
   };
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <View style={styles.header}>
-        <MaterialCommunityIcons name="robot" size={48} color={theme.colors.primary} />
-        <Text variant="headlineMedium" style={[styles.title, { color: theme.colors.primary }]}>
-          AI Tutor
-        </Text>
-        <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant }}>
-          Ask anything. Learn everything.
-        </Text>
-      </View>
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.content}>
+        <View style={styles.header}>
+          <MaterialCommunityIcons name="robot" size={44} color="#00FFCC" />
+          <Text variant="headlineMedium" style={styles.title}>AI Tutor</Text>
+          <Text variant="bodyMedium" style={styles.subtitle}>Ask anything. Learn everything.</Text>
+        </View>
 
-      <View style={styles.content}>
-        <Card style={styles.card}>
-          <Card.Content>
-            <Text variant="titleMedium" style={{ marginBottom: 12 }}>
-              What would you like to learn about?
-            </Text>
+        <View style={styles.card}>
+          <Text variant="titleMedium" style={styles.cardTitle}>What do you want to learn?</Text>
+          <View style={styles.chipGroup}>
+            <Chip icon="flash" mode="outlined" style={styles.chip}>Math</Chip>
+            <Chip icon="flask" mode="outlined" style={styles.chip}>Science</Chip>
+            <Chip icon="book" mode="outlined" style={styles.chip}>History</Chip>
+            <Chip icon="palette" mode="outlined" style={styles.chip}>Arts</Chip>
+          </View>
+        </View>
 
-            <View style={styles.chipGroup}>
-              <Chip icon="flash" mode="outlined" style={styles.chip}>
-                Math
-              </Chip>
-              <Chip icon="flask" mode="outlined" style={styles.chip}>
-                Science
-              </Chip>
-            </View>
-
-            <View style={styles.chipGroup}>
-              <Chip icon="book" mode="outlined" style={styles.chip}>
-                History
-              </Chip>
-              <Chip icon="palette" mode="outlined" style={styles.chip}>
-                Arts
-              </Chip>
-            </View>
-          </Card.Content>
-        </Card>
-
-        <Card style={styles.card}>
-          <Card.Content>
-            <Text variant="titleMedium" style={{ marginBottom: 12 }}>
-              Recent Topics
-            </Text>
-            <Button mode="text" icon="arrow-right">
-              Quadratic Equations
-            </Button>
-            <Button mode="text" icon="arrow-right">
-              Photosynthesis Explained
-            </Button>
-            <Button mode="text" icon="arrow-right">
-              World War II Timeline
-            </Button>
-          </Card.Content>
-        </Card>
+        <View style={styles.card}>
+          <Text variant="titleMedium" style={styles.cardTitle}>Recent Topics</Text>
+          <Text style={styles.topicItem}>Quadratic Equations</Text>
+          <Text style={styles.topicItem}>Photosynthesis Explained</Text>
+          <Text style={styles.topicItem}>World War II Timeline</Text>
+        </View>
 
         <View style={styles.inputContainer}>
           <TextInput
@@ -78,56 +48,98 @@ export const TutorScreen: React.FC = () => {
             style={styles.input}
             multiline
             numberOfLines={3}
+            theme={{
+              colors: {
+                background: '#1A1A1A',
+                onSurfaceVariant: '#888888',
+                outline: '#2E2E2E',
+                primary: '#00FFCC',
+                text: '#FFFFFF',
+              },
+            }}
+            textColor="#FFFFFF"
           />
-          <Button
-            mode="contained"
-            onPress={handleSendMessage}
-            icon="send"
-            style={styles.sendButton}
-          >
-            Send
-          </Button>
+          <TouchableOpacity onPress={handleSendMessage} style={styles.sendButton}>
+            <MaterialCommunityIcons name="send" size={16} color="#0A0A0A" />
+            <Text style={styles.sendButtonText}>Send</Text>
+          </TouchableOpacity>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#0A0A0A',
   },
   header: {
     alignItems: 'center',
-    paddingVertical: 24,
-    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 20,
   },
   title: {
     marginTop: 12,
-    fontWeight: '600',
+    color: '#FFFFFF',
+    fontWeight: '800',
+  },
+  subtitle: {
+    color: '#888888',
+    marginTop: 4,
   },
   content: {
-    padding: 16,
+    paddingHorizontal: 20,
+    paddingBottom: 28,
   },
   card: {
-    marginBottom: 16,
+    marginBottom: 12,
+    backgroundColor: '#1A1A1A',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#252525',
+    padding: 14,
+  },
+  cardTitle: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+    marginBottom: 10,
   },
   chipGroup: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 8,
-    marginBottom: 8,
   },
   chip: {
     marginVertical: 4,
+    backgroundColor: '#101010',
+    borderColor: '#2E2E2E',
+  },
+  topicItem: {
+    color: '#C9C9C9',
+    paddingVertical: 6,
+    borderBottomWidth: 1,
+    borderBottomColor: '#242424',
   },
   inputContainer: {
-    marginTop: 16,
+    marginTop: 8,
   },
   input: {
     marginBottom: 12,
+    backgroundColor: '#1A1A1A',
   },
   sendButton: {
-    marginTop: 8,
+    marginTop: 4,
+    backgroundColor: '#00FFCC',
+    borderRadius: 14,
+    paddingVertical: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 6,
+  },
+  sendButtonText: {
+    color: '#0A0A0A',
+    fontWeight: '700',
   },
 });
