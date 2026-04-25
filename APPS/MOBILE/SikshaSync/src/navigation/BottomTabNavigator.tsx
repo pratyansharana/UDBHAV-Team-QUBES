@@ -6,6 +6,7 @@ import { TutorScreen } from '../screens/TutorScreen';
 import { QuizScreen } from '../screens/QuizScreen';
 import { CareerScreen } from '../screens/CareerScreen';
 import { BottomTabParamList } from './types'; 
+import { DashboardScreen } from '../screens/DashboardScreen';
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -19,6 +20,7 @@ export const BottomTabNavigator = () => {
           else if (route.name === 'Tutor') iconName = focused ? 'robot' : 'robot-outline';
           else if (route.name === 'Quiz') iconName = focused ? 'help-circle' : 'help-circle-outline';
           else if (route.name === 'Career') iconName = focused ? 'compass' : 'compass-outline';
+          else if (route.name === 'Dashboard') iconName = focused ? 'view-dashboard' : 'view-dashboard-outline';  
 
           return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
         },
@@ -38,9 +40,11 @@ export const BottomTabNavigator = () => {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} options={{ title: 'Dashboard' }} />
-      <Tab.Screen name="Tutor" component={TutorScreen} options={{ title: 'AI Tutor' }} />
+      
       <Tab.Screen name="Quiz" component={QuizScreen} options={{ title: 'Quiz' }} />
+      <Tab.Screen name="Tutor" component={TutorScreen} options={{ title: 'AI Tutor', headerShown:false }} />
       <Tab.Screen name="Career" component={CareerScreen} options={{ title: 'Careers' }} />
+      <Tab.Screen name="Dashboard" component={DashboardScreen} options={{ title: 'Dashboard' }} />
     </Tab.Navigator>
   );
 };
