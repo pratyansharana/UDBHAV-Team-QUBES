@@ -1,3 +1,26 @@
+### Quick Start (for new users)
+
+1. Clone the repository:
+   ```sh
+   git clone <repo-url>
+   cd APPS/MOBILE/SikshaSync
+   ```
+
+2. Download the APK (if provided) and install it on your device.
+
+3. Open Command Prompt (cmd) in the same directory as the project (where your `package.json` is).
+
+4. Install dependencies:
+   ```sh
+   npm install
+   ```
+
+5. Run the app:
+   ```sh
+   npx expo run -c
+   ```
+
+This will build and launch the app. Make sure your device/emulator is connected.
 
 # Udbhav Hackathon 2K26
 
